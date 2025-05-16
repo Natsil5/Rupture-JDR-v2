@@ -1,0 +1,14 @@
+{
+  "TYPES": {
+    "Actor": {
+      "character": "Personnage"
+    },
+    "Item": {
+      "item": "Objet"
+    }
+  },
+  "INTOTHEODD": {
+    "Character": {
+    }
+  }
+}

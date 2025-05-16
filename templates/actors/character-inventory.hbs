@@ -1,0 +1,7 @@
+<div class="inventory-list" data-drop="true">
+  {{#each items as |item|}}
+    <div class="inventory-item" data-item-id="{{item._id}}" draggable="true">
+      {{item.name}}
+    </div>
+  {{/each}}
+</div>
