@@ -20,7 +20,7 @@ export default class LiberCharacterData extends foundry.abstract.DataModel {
         }
       }),
       biography: new fields.HTMLField({ required: false, blank: true, initial: "", textSearch: true }),
-      avantage: new fields.StringField({ required: false, blank: true, initial: "", textSearch: false }),
+      avantage: new fields.fields({ required: false, blank: true, initial: "", textSearch: false }),
       desavantage: new fields.HTMLField({ required: false, blank: true, initial: "", textSearch: false }),
       vig: new fields.NumberField({ required: true, min: 20, max: 100, initial: 20 }),
       coo: new fields.NumberField({ required: true, min: 20, max: 100, initial: 20 }),
