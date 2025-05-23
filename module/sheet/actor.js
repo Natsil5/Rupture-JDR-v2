@@ -128,7 +128,7 @@ export default class LiberCharacterSheet extends HandlebarsApplicationMixin(Acto
     * @returns 
     */
     async rollSave(ability) {
-      const roll = await new Roll("1d20").roll();
+      const roll = await new Roll("3d6*5").roll();
       const total = roll.total;
       let success = false;
       const abilityValue = this.system.abilities[ability].value;

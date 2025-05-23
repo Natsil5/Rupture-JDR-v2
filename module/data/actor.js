@@ -8,7 +8,7 @@ export default class LiberCharacterData extends foundry.abstract.DataModel {
       type: new fields.StringField({ required: true, initial: "character" }),
       name: new fields.StringField({ required: true, initial: "Nouvel Acteur" }),
       espece: new fields.StringField({ required: true, initial: "" }),
-      level: new fields.NumberField({ required: true, min: 1, max: 100, initial: 1 }),
+      xp: new fields.NumberField({ required: true, min: 1, initial: 1 }),
       age: new fields.NumberField({ required: true, min: 1, initial: 1 }),
       sex: new fields.StringField({
         required: true,
@@ -20,8 +20,8 @@ export default class LiberCharacterData extends foundry.abstract.DataModel {
         }
       }),
       biography: new fields.HTMLField({ required: false, blank: true, initial: "", textSearch: true }),
-      avantage: new fields.HTMLField({ required: false, blank: true, initial: "", textSearch: true }),
-      desavantage: new fields.HTMLField({ required: false, blank: true, initial: "", textSearch: true }),
+      avantage: new fields.StringField({ required: false, blank: true, initial: "", textSearch: false }),
+      desavantage: new fields.HTMLField({ required: false, blank: true, initial: "", textSearch: false }),
       vig: new fields.NumberField({ required: true, min: 20, max: 100, initial: 20 }),
       coo: new fields.NumberField({ required: true, min: 20, max: 100, initial: 20 }),
       log: new fields.NumberField({ required: true, min: 20, max: 100, initial: 20 }),
