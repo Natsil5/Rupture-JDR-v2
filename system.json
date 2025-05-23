@@ -23,4 +23,8 @@
   ],
   "esmodules": ["module/rupture.js"],
   "packs": []
+
+  "url": "https://github.com/Natsil5/Rupture-JDR",
+  "manifest": "https://raw.githubusercontent.com/Natsil5/Rupture-JDR/master/system.json",
+  "download": "https://github.com/Natsil5/Rupture-JDR/archive/refs/heads/master.zip",
 }
