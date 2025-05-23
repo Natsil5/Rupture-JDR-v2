@@ -22,9 +22,12 @@
     }
   ],
   "esmodules": ["module/rupture.js"],
-  "packs": []
-
-  "url": "https://github.com/Natsil5/Rupture-JDR",
-  "manifest": "https://raw.githubusercontent.com/Natsil5/Rupture-JDR/master/system.json",
-  "download": "https://github.com/Natsil5/Rupture-JDR/archive/refs/heads/master.zip",
+  "packs": [],
+  "url": "https://github.com/Natsil5/Rupture-JDR-v2",
+  "manifest": "https://raw.githubusercontent.com/Natsil5/Rupture-JDR-v2/refs/heads/main/system.json",
+  "download": "https://github.com/Natsil5/Rupture-JDR-v2/archive/refs/heads/main.zip",
+  "grid":{
+    "dDistance": 1,
+    "units": "m"
+  }
 }
