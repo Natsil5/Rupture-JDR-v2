@@ -77,6 +77,17 @@ export default class LiberCharacterSheet extends HandlebarsApplicationMixin(Acto
   _onRender(context, options) {
     super._onRender(context, options);  // Appelez la méthode parente si nécessaire
     console.log(context);
+    // Récupérer l'onglet actif spécifique à ce personnage (ou valeur par défaut)
+    const activeTab = localStorage.getItem(`activeTab-${this.actor.id}`) || "background"; 
+    // Appliquer l'affichage correct
+    this._setActiveTab(activeTab);
+    // Gérer le clic sur les onglets pour changer de vue
+    this.element.querySelectorAll(".sheet-tabs [data-tab]").forEach(tab => {
+      tab.addEventListener("click", (event) => {
+        const newTab = event.currentTarget.dataset.tab;
+        this._setActiveTab(newTab);
+      });
+    });
   }
 
   async _preparePartContext(partId, context) {
@@ -305,4 +316,39 @@ export default class LiberCharacterSheet extends HandlebarsApplicationMixin(Acto
         });
         return fp.browse();
     }
+    /** @override */
+  _setActiveTab(tabId) {
+      if (!this.actor) return;
+
+      // Stocker l'onglet actif en utilisant l'ID de l'acteur
+      localStorage.setItem(activeTab-${this.actor.id}, tabId);
+
+      // Masquer tous les onglets
+      this.element.querySelectorAll(".tab").forEach(tab => {
+          tab.style.display = "none";
+      });
+
+      // Afficher seulement l'onglet actif
+      const activeTab = this.element.querySelector(.tab[data-tab="${tabId}"]);
+      if (activeTab) {
+          activeTab.style.display = "block";
+      }
+
+      // Mettre à jour la classe "active" dans la navigation
+      this.element.querySelectorAll(".sheet-tabs [data-tab]").forEach(tab => {
+          tab.classList.remove("active");
+      });
+
+      const activeTabNav = this.element.querySelector(.sheet-tabs [data-tab="${tabId}"]);
+      if (activeTabNav) {
+          activeTabNav.classList.add("active");
+      }
+
+      const GM = game.user.isGM;
+      if (!GM) { // Vérifie si le joueur n'est PAS GM
+        document.querySelectorAll('.reponse').forEach(element => {
+          element.style.display = "none"; // Corrigé "this" -> "element"
+        });
+      }
+  }
 }
