@@ -1,0 +1,42 @@
+.liber-character-sheet {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+}
+
+.attributes {
+  display: flex;
+  justify-content: space-around;
+}
+
+.attribute {
+  text-align: center;
+}
+:root {
+    --couleur_bg:#262322;
+    --couleur_text:#e5e4dc;
+    --couleur_bleu:#39454f;
+    --couleur_input:#211f1c;
+}
+
+input[type=text], input[type=number], input[type=password], input[type=date], input[type=time], input[type=datetime-local], input[type=search], input[type=file], select{background: var(--couleur_input);color:var(--couleur_text);}
+
+/**********************/
+/*Feuille de pesonnage*/
+/**********************/
+.liber .window-content{background: var(--couleur_bg);color:var(--couleur_text);}
+.liber .avatar{height: 100px;width: 100px; border-radius: 50%; border:solid 2px var(--couleur_input);float: left}
+.liber .info{float:left;width: calc(100% - 110px)}
+.liber .half{width: 49%;float: left;height: 100px}
+.liber .tiers{width: 33%;float: left;height: 100px}
+.liber .label .form-group{display: inline-block;padding:5px;width: calc(100% - 55px);}
+.liber .label{border-bottom:solid 1px var(--couleur_input);}
+.liber .xp{width: 100%; background: var(--couleur_input); height: 20px; display: block;position: relative;margin-bottom: 20px}
+.liber .xp input{background: none; width: 50px; float:left;height: 20px}
+.liber .pourcentage{width: 20%;background: var(--couleur_bleu); height: 20px; display: block;}
+.liber .padding{padding: 5px;height: 247px}
+.liber .stats input{width:50px}
+.liber #stat table {width: 626px}
+.liber #stat table input{width: 50px}
+.liber #stat table td{width: 50px; text-align: center}
+prose-mirror{background: var(--couleur_input)}

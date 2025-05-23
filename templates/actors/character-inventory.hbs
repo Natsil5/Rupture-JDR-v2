@@ -1,0 +1,25 @@
+<div id="inventory" class="tab" data-group="sheet" data-tab="inventory">
+	<table>
+		<tr>
+			<td>Nom</td>
+			<td>CDT</td>
+			<td>Portée</td>
+			<td>Mun</td>
+			<td>Dmg</td>
+			<td>Effets</td>
+			<td></td>
+		</tr>
+	  {{#each items as |item|}}
+	    <tr class="inventory-item" data-item-id="{{item._id}}" draggable="true">
+	     	<td>{{item.name}}</td>
+			<td>{{item.system.cdt}}</td>
+			<td>{{item.system.portee}}</td>
+			<td>{{item.system.mun}}</td>
+			<td>{{item.system.dmg}}</td>
+			<td>{{{item.system.description}}}</td>
+			<td><a class="item-control item-edit" title="Edit Item" data-action="edit" data-item-id="{{item._id}}"><i class="fas fa-edit"></i></a>
+                  <a class="item-control item-delete" title="Delete Item" data-action="delete" data-item-id="{{item._id}}"><i class="fas fa-trash"></i></td>
+	    </tr>
+	  {{/each}}
+	</table>
+</div>

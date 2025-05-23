@@ -1,0 +1,26 @@
+{
+  "id": "rupture",
+  "title": "Rupture Game System",
+  "version": "0.1.0",
+  "description": "",
+  "authors": [
+    {
+      "name": "Vharung",
+      "discord": "Vharung"
+    },{
+      "name": "Natsil",
+      "discord": "natsil"
+    }],
+  "license": "MIT",
+  "scripts": [],
+  "styles": ["style/rupture.css"],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "esmodules": ["module/rupture.js"],
+  "packs": []
+}

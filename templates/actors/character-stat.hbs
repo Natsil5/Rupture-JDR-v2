@@ -1,0 +1,58 @@
+<div id="stat" class="tab" data-group="sheet" data-tab="stat">
+	<div class="half padding">
+		<h2>Avantages</h2>
+    	{{formInput
+	      systemFields.avantage
+	      value=system.avantage
+	      name="system.avantage"
+	    }} 
+	</div>
+	<div class="half padding">
+		<h2>Dèsavantages</h2>
+	    {{formInput
+	      systemFields.desavantage
+	      value=system.desavantage
+	      name="system.desavantage"
+	    }} 
+	</div>
+
+	<table>
+		<tr>
+			<td>VIG</td>
+			<td>COO</td>
+			<td>LOG</td>
+			<td>INS</td>
+			<td>EMP</td>
+			<td>POU</td>
+		</tr>
+		<tr>
+			<td>{{formInput systemFields.vig name="system.vig" value=system.vif localize=true rootId=partId}}</td>
+			<td>{{formInput systemFields.coo name="system.coo" value=system.coo localize=true rootId=partId}}</td>
+			<td>{{formInput systemFields.log name="system.log" value=system.log localize=true rootId=partId}}</td>
+			<td>{{formInput systemFields.ins name="system.ins" value=system.ins localize=true rootId=partId}}</td>
+			<td>{{formInput systemFields.emp name="system.emp" value=system.emp localize=true rootId=partId}}</td>
+			<td>{{formInput systemFields.pou name="system.pou" value=system.pou localize=true rootId=partId}}</td>
+		</tr>
+	</table>
+	<div class="tiers stats">
+		<p>Barrière : {{formInput systemFields.barriere name="system.barriere" value=system.barriere localize=true rootId=partId}}</p>
+		<p>santé : {{formInput systemFields.health name="system.health" value=system.health localize=true rootId=partId}} / {{formInput systemFields.healthmax name="system.healthmax" value=system.healthmax localize=true rootId=partId}} </p>
+	</div>
+	<div class="tiers stats">
+		<p>Magie : {{formInput systemFields.magieencour name="system.magieencour" value=system.magieencour localize=true rootId=partId}} / {{formInput systemFields.magiemax name="system.magiemax" value=system.magiemax localize=true rootId=partId}}</p>
+		<p>Acc: {{formInput systemFields.acc name="system.acc" value=system.acc localize=true rootId=partId}} / {{formInput systemFields.accmax name="system.accmax" value=system.accmax localize=true rootId=partId}}</p>
+	</div>
+	<div class="tiers stats">
+		<p>Régénération : {{formInput systemFields.regeneration name="system.regeneration" value=system.regeneration localize=true rootId=partId}} </p>
+		<p>Inhérence : {{formInput systemFields.inherence name="system.inherence" value=system.inherence localize=true rootId=partId}}</p>
+	</div>
+	<div class="half stats">
+		<p>Armure : {{formInput systemFields.armor name="system.armor" value=system.armor localize=true rootId=partId}} / {{formInput systemFields.armormax name="system.armormax" value=system.armormax localize=true rootId=partId}}</p>
+		<p>Bouclier : {{formInput systemFields.bouclier name="system.bouclier" value=system.bouclier localize=true rootId=partId}} / {{formInput systemFields.boucliermax name="system.boucliermax" value=system.boucliermax localize=true rootId=partId}}</p>
+	</div>
+	<div class="half stats">
+		<p>Prot : {{formInput systemFields.prot name="system.prot" value=system.prot localize=true rootId=partId}} / {{formInput systemFields.protmax name="system.protmax" value=system.protmax localize=true rootId=partId}}</p>
+		<p>Prot : {{formInput systemFields.prots name="system.prots" value=system.prots localize=true rootId=partId}} / {{formInput systemFields.protsmax name="system.protsmax" value=system.protsmax localize=true rootId=partId}}</p>
+	</div>
+
+</div>

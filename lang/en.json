@@ -1,0 +1,35 @@
+{
+  "TYPES": {
+    "Actor": {
+      "character": "Personnage"
+    },
+    "Item": {
+      "item": "Objet",
+      "armor": "Armure",
+      "weapon": "Arme"
+    }
+  },
+  "INTOTHEODD": {
+    "Character": {
+    }
+  },
+  "Rupture":{
+    "Character":{
+      "Sex":{
+        "Male":"Male",
+        "Female":"Female",
+        "Autre":"Autre"
+      },
+      "Labels": {
+        "biography": "Histoire",
+        "inventory": "Inventaire",
+        "Erreur1": "Agility and Strength do not match Physical!",
+        "Erreur2": "Charisma and Sagacity do not match Social!",
+        "Erreur3": "Wit and Memory do not match Mental!",
+        "Erreur4": "The total sum of stats is not equal to 170!",
+        "No": "No",
+        "Yes": "Yes"
+      }
+    }
+  }
+}

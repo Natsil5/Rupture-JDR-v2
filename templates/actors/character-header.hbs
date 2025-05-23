@@ -1,0 +1,19 @@
+<header class="sheet-header" data-tooltip="{{actor.name}}">
+    <img class="avatar" src="{{actor.img}}" data-edit="img" data-tooltip="{{actor.name}}"/>
+    <div class="info">
+	    <div class="half">
+	    	<div class="label">Nom : <div class="form-group">{{formInput fields.name value=source.name rootId=partId}}</div></div>
+	    	<div class="label">Sex : {{formField systemFields.sex name="system.sex" value=system.sex localize=true rootId=partId type="select"}}</div>
+		</div>
+		<div class="half">
+		    <div class="label">Espèce : {{formField systemFields.espece name="system.espece" value=system.espece localize=true rootId=partId type="select"}}</div>
+		    <div class="label">Age : <div class="form-group">{{formInput systemFields.age name="system.age" value=system.age localize=true rootId=partId}}</div></div>
+		</div>
+		
+	</div>
+	<p>XP</p>
+	<div class="xp">
+		{{formInput systemFields.level name="system.level" value=system.level localize=true rootId=partId}}
+		<div class="pourcentage"></div>
+	</div>
+</header>

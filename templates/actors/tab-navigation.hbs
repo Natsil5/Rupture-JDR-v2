@@ -1,0 +1,7 @@
+<nav class="navlib sheet-tabs tabs {{actor.type}}" aria-roledescription="Form Tab Navigation" data-application-part="tabs">
+  {{#each tabs as |tab|}}
+    <a class="item {{tab.id}} {{tab.cssClass}}" data-action="tab" data-group="sheet" data-tab="{{tab.id}}">
+      <span class="{{tab.icon}}"> {{tab.label}}</span>
+    </a>
+  {{/each}}
+</nav>
