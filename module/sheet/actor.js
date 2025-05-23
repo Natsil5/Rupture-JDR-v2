@@ -321,7 +321,7 @@ export default class LiberCharacterSheet extends HandlebarsApplicationMixin(Acto
       if (!this.actor) return;
 
       // Stocker l'onglet actif en utilisant l'ID de l'acteur
-      localStorage.setItem(activeTab-${this.actor.id}, tabId);
+      localStorage.setItem(`activeTab-${this.actor.id}`, tabId);
 
       // Masquer tous les onglets
       this.element.querySelectorAll(".tab").forEach(tab => {
@@ -329,7 +329,7 @@ export default class LiberCharacterSheet extends HandlebarsApplicationMixin(Acto
       });
 
       // Afficher seulement l'onglet actif
-      const activeTab = this.element.querySelector(.tab[data-tab="${tabId}"]);
+      const activeTab = this.element.querySelector(`.tab[data-tab="${tabId}"]`);
       if (activeTab) {
           activeTab.style.display = "block";
       }
@@ -339,7 +339,7 @@ export default class LiberCharacterSheet extends HandlebarsApplicationMixin(Acto
           tab.classList.remove("active");
       });
 
-      const activeTabNav = this.element.querySelector(.sheet-tabs [data-tab="${tabId}"]);
+      const activeTabNav = this.element.querySelector(`.sheet-tabs [data-tab="${tabId}"]`);
       if (activeTabNav) {
           activeTabNav.classList.add("active");
       }
