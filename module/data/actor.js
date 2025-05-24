@@ -16,7 +16,6 @@ export default class LiberCharacterData extends foundry.abstract.DataModel {
         choices: {
           [SEX.MALE]: game.i18n.localize("Rupture.Character.Sex.Male"),
           [SEX.FEMALE]: game.i18n.localize("Rupture.Character.Sex.Female"),
-          [SEX.AUTRE]: game.i18n.localize("Rupture.Character.Sex.Autre")
         }
       }),
       biography: new fields.HTMLField({ required: false, blank: true, initial: "", textSearch: true }),
