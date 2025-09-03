@@ -131,7 +131,7 @@ export default class LiberCharacterSheet extends HandlebarsApplicationMixin(Acto
       }
     }
 
-    static async #onRoll() {
+    static async #onRoll(event,target) {
       const ability = target.getAttribute('data-ability')
       const roll = await new Roll("3d6*5").roll();
       const total = roll.total;
