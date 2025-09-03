@@ -20,6 +20,9 @@
         "Female":"Female",
         "Autre":"Autre"
       },
+      "Competences":{
+        "mentales": "Mental"
+      },
       "Labels": {
         "biography": "Histoire",
         "inventory": "Inventaire",

@@ -5,7 +5,7 @@
               <p class="titrecompe">{{localize field.label}}</p>
       {{else}}
         <div class="perso {{caract}}" data-ability="{{caract}}" style="width: 46%;float: left;margin-right: 10px;">
-          <span title="{{localize field.label}}" calc="{{caract}}">
+          <span title="{{localize field.label}}" calc="{{caract}}" data-action="roll" data-ability="field.label">
             {{localize field.label}}
           </span>
             {{formInput field 

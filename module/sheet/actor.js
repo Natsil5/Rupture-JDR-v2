@@ -15,6 +15,7 @@ export default class LiberCharacterSheet extends HandlebarsApplicationMixin(Acto
     actions: {
       edit: LiberCharacterSheet.#onItemEdit,
       delete: LiberCharacterSheet.#onItemDelete,
+      roll: LiberCharacterSheet.#onRoll,
       rollSave: LiberCharacterSheet.#onItemRollSave,
       rollDamage: LiberCharacterSheet.#onItemRollDamage,
       equip: LiberCharacterSheet.#onItemEquip,
@@ -130,7 +131,48 @@ export default class LiberCharacterSheet extends HandlebarsApplicationMixin(Acto
       }
     }
 
+    async roll() {
+      const ability = target.getAttribute('data-ability')
+      const roll = await new Roll("3d6*5").roll();
+      const total = roll.total;
+      let success = false;
+      const abilityValue = this.system.abilities[ability].value;
 
+      if (total <= abilityValue) {
+        success = true;
+      }
+
+      const abilityName = game.i18n.localize(`INTOTHEODD.Character.FIELDS.${ability}.label`);
+      let introText;
+      if (success) {
+        introText = game.i18n.format("INTOTHEODD.Roll.SaveRoll", { ability: abilityName, value: abilityValue });
+      }
+      else {
+        introText = game.i18n.format("INTOTHEODD.Roll.SaveRoll", { ability: abilityName, value: abilityValue });
+      }
+
+      let chatData = {
+        rollType: "save",
+        abilityValue,
+        actingCharName: this.name,
+        actingCharImg: this.img,
+        introText,
+        formula: roll.formula,
+        total: total,
+        tooltip: await roll.getTooltip(),
+        success
+      }
+
+      let chat = await new IntoTheOddChat(this)
+        .withTemplate("systems/intotheodd/templates/roll-result.hbs")
+        .withData(chatData)
+        .withRolls([roll])
+        .create();
+
+      await chat.display();
+
+      return { roll, total, success };
+  }
 
 
      /**
@@ -138,6 +180,7 @@ export default class LiberCharacterSheet extends HandlebarsApplicationMixin(Acto
     * @param {*} ability 
     * @returns 
     */
+    
     async rollSave(ability) {
       const roll = await new Roll("3d6*5").roll();
       const total = roll.total;
