@@ -44,7 +44,14 @@ export default class LiberCharacterData extends foundry.abstract.DataModel {
       protmax: new fields.NumberField({ required: true, min: 0, initial: 0 }),
       prots: new fields.NumberField({ required: true, min: 0, initial: 0 }),
       protsmax: new fields.NumberField({ required: true, min: 0, initial: 0 }),
-
+      competences: new fields.SchemaField(
+                Object.fromEntries(
+                    Object.keys(COMPETENCES).map(key => [
+                        key,
+                        new fields.NumberField({ required: true, min: -20, max: 20, initial: 0, label: COMPETENCES[key] })
+                    ])
+                )
+            )
 
     };
   }
