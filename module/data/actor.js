@@ -1,4 +1,4 @@
-import {SEX} from "./constants.js"; // Import de la constante METIERS
+import {SEX,COMPETENCES} from "./constants.js"; // Import de la constante METIERS
 
 /** Modèle de données pour un personnage */
 export default class LiberCharacterData extends foundry.abstract.DataModel {
@@ -51,4 +51,5 @@ export default class LiberCharacterData extends foundry.abstract.DataModel {
   /** @override */
     static LOCALIZATION_PREFIXES = ["liber.Character"];
 }
+
 
