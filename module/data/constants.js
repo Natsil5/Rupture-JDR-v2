@@ -9,5 +9,5 @@ export const COMPETENCES = Object.fromEntries(
         sociales:"",charisme:"",negociation:"",tromperie:"",
         techniques:"",medecine:"",objet:"",assassinat:"",bouclier:"",tueur:"",
         combats:"",combat:"",hast:"",cc:"",lancer:"",melee:"",tir:"",visee:""
-    }).map(attr => [attr, Liber.Character.Competences.${attr}])
+    }).map(attr => [attr, `Liber.Character.Competences.${attr}`])
 );
