@@ -2,25 +2,30 @@
 
   {{!-- Feuille Header --}}
   <header class="sheet-header">
-    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
-    
+
+    {{!-- Colonne gauche : portrait --}}
+    <div class="header-portrait">
+      <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
+    </div>
+
+    {{!-- Colonne droite : identité --}}
     <div class="header-fields">
       <h1 class="charname">
         <input name="name" type="text" value="{{actor.name}}" placeholder="Nom du Personnage"/>
       </h1>
-      
+
       <div class="identity-grid">
         <div class="identity-field">
           <label>Espèce</label>
           <select name="system.race">
             <option value="" {{#unless system.race}}selected{{/unless}}>— Choisir une espèce —</option>
-            <option value="humain" {{#if (eq system.race "humain")}}selected{{/if}}>Humain</option>
-            <option value="fae" {{#if (eq system.race "fae")}}selected{{/if}}>Faë</option>
-            <option value="jorogumo" {{#if (eq system.race "jorogumo")}}selected{{/if}}>Jorogumo</option>
+            <option value="humain"     {{#if (eq system.race "humain")}}selected{{/if}}>Humain</option>
+            <option value="fae"        {{#if (eq system.race "fae")}}selected{{/if}}>Faë</option>
+            <option value="jorogumo"   {{#if (eq system.race "jorogumo")}}selected{{/if}}>Jorogumo</option>
             <option value="pantherine" {{#if (eq system.race "pantherine")}}selected{{/if}}>Panthérine</option>
-            <option value="warabouc" {{#if (eq system.race "warabouc")}}selected{{/if}}>Warabouc</option>
-            <option value="wendigo" {{#if (eq system.race "wendigo")}}selected{{/if}}>Wendigo</option>
-            <option value="worg" {{#if (eq system.race "worg")}}selected{{/if}}>Worg</option>
+            <option value="warabouc"   {{#if (eq system.race "warabouc")}}selected{{/if}}>Warabouc</option>
+            <option value="wendigo"    {{#if (eq system.race "wendigo")}}selected{{/if}}>Wendigo</option>
+            <option value="worg"       {{#if (eq system.race "worg")}}selected{{/if}}>Worg</option>
           </select>
         </div>
 
@@ -48,8 +53,10 @@
           </div>
         </div>
       </div>
+    </div>
 
-      {{!-- Avantages et Désavantages --}}
+    {{!-- Ligne complète : avantages + désavantages --}}
+    <div class="header-bottom">
       <div class="advantages-section">
         <div class="advantages-list">
           <label>Avantages:</label>
@@ -126,6 +133,7 @@
         </div>
       </div>
     </div>
+
   </header>
 
   {{!-- Navigation Tabs --}}

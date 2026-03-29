@@ -104,9 +104,8 @@ export class Rupture2069Item extends Item {
     const systemData = this.system;
     const actor = this.actor;
 
-    // Demander la difficulté
-    const difficulte = await this._askForDifficulty();
-    if (difficulte === null) return;
+    // Difficulté par défaut : Moyenne (80)
+    const difficulte = 80;
 
     // Effectuer le jet
     return await actor.rollSkill(
@@ -147,9 +146,8 @@ export class Rupture2069Item extends Item {
     const niveau = competence.system.niveau || 0;
     const caracteristique = competence.system.caracteristique;
 
-    // Demander la difficulté
-    const difficulte = await this._askForDifficulty();
-    if (difficulte === null) return;
+    // Difficulté par défaut : Moyenne (80)
+    const difficulte = 80;
 
     // Effectuer le jet d'attaque
     const result = await actor.rollSkill(caracteristique, niveau, difficulte, `Attaque: ${this.name}`);
@@ -267,50 +265,6 @@ export class Rupture2069Item extends Item {
     }
 
     return result;
-  }
-
-  /**
-   * Demande la difficulté au joueur
-   */
-  async _askForDifficulty() {
-    return new Promise((resolve) => {
-      new Dialog({
-        title: "Difficulté du test",
-        content: `
-          <form>
-            <div class="form-group">
-              <label>Choisissez la difficulté:</label>
-              <select id="difficulty" name="difficulty">
-                <option value="20">Routine (20)</option>
-                <option value="40">Facile (40)</option>
-                <option value="80" selected>Moyenne (80)</option>
-                <option value="120">Difficile (120)</option>
-                <option value="140">Très Difficile (140)</option>
-                <option value="180">Elite (180)</option>
-                <option value="240">Exceptionnelle (240)</option>
-                <option value="280">Absurde (280)</option>
-                <option value="320">Surhumaine (320)</option>
-                <option value="440">Divine (440)</option>
-              </select>
-            </div>
-          </form>
-        `,
-        buttons: {
-          roll: {
-            label: "Lancer",
-            callback: (html) => {
-              const difficulty = parseInt(html.find('[name="difficulty"]').val());
-              resolve(difficulty);
-            }
-          },
-          cancel: {
-            label: "Annuler",
-            callback: () => resolve(null)
-          }
-        },
-        default: "roll"
-      }).render(true);
-    });
   }
 
   /**

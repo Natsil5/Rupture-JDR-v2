@@ -29,27 +29,43 @@
 /* =========================================== */
 
 .rupture2069 .sheet-header {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  padding: 8px;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-areas:
+    "portrait fields"
+    "bottom   bottom";
+  gap: 10px 16px;
+  padding: 10px;
   background: linear-gradient(135deg, #2c3e50, #34495e);
   border-bottom: 2px solid #1abc9c;
   flex-shrink: 0;
 }
 
+.rupture2069 .sheet-header .header-portrait {
+  grid-area: portrait;
+}
+
 .rupture2069 .sheet-header .profile-img {
-  flex: 0 0 80px;
-  height: 80px;
-  margin-right: 10px;
+  width: 220px;
+  height: 280px;
+  object-fit: contain;
+  object-position: center top;
   border: 2px solid #1abc9c;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
+  background: #1a1a2e;
+  display: block;
 }
 
 .rupture2069 .sheet-header .header-fields {
-  flex: 1;
-  min-width: 400px;
+  grid-area: fields;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rupture2069 .sheet-header .header-bottom {
+  grid-area: bottom;
 }
 
 .rupture2069 .sheet-header h1 {
@@ -768,15 +784,47 @@
   padding: 10px;
 }
 
+.rupture2069-roll .roll-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+  margin: -10px -10px 10px -10px;
+  padding: 12px;
+  border-radius: 3px 3px 0 0;
+}
+
+.rupture2069-roll .roll-header img {
+  width: 225px;
+  height: 225px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 6px;
+  border: 3px solid rgba(255,255,255,0.7);
+}
+
+.rupture2069-roll .roll-header-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.rupture2069-roll .roll-actor-name {
+  font-size: 0.8em;
+  color: rgba(255,255,255,0.85);
+  font-style: italic;
+}
+
 .rupture2069-roll h3 {
-  margin: 0 0 10px 0;
-  color: #2c3e50;
-  border-bottom: 1px solid #1abc9c;
-  padding-bottom: 5px;
+  margin: 0;
+  color: white;
+  font-size: 1em;
 }
 
 .rupture2069-roll .roll-details {
-  margin-top: 10px;
+  margin-top: 0;
 }
 
 .rupture2069-roll .roll-line {

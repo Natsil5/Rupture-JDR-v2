@@ -462,9 +462,8 @@ export class Rupture2069ActorSheet extends ActorSheet {
    * Jet de caractéristique
    */
   async _onCaracteristiqueRoll(caracteristique) {
-    // Demander la difficulté
-    const difficulte = await this._askForDifficulty();
-    if (difficulte === null) return;
+    // Difficulté par défaut : Moyenne (80)
+    const difficulte = 80;
 
     // Labels des caractéristiques
     const labels = {
@@ -478,50 +477,6 @@ export class Rupture2069ActorSheet extends ActorSheet {
 
     // Effectuer le jet
     await this.actor.rollSkill(caracteristique, 0, difficulte, `Test de ${labels[caracteristique]}`);
-  }
-
-  /**
-   * Demande la difficulté
-   */
-  async _askForDifficulty() {
-    return new Promise((resolve) => {
-      new Dialog({
-        title: "Difficulté du test",
-        content: `
-          <form>
-            <div class="form-group">
-              <label>Choisissez la difficulté:</label>
-              <select id="difficulty" name="difficulty">
-                <option value="20">Routine (20)</option>
-                <option value="40">Facile (40)</option>
-                <option value="80" selected>Moyenne (80)</option>
-                <option value="120">Difficile (120)</option>
-                <option value="140">Très Difficile (140)</option>
-                <option value="180">Elite (180)</option>
-                <option value="240">Exceptionnelle (240)</option>
-                <option value="280">Absurde (280)</option>
-                <option value="320">Surhumaine (320)</option>
-                <option value="440">Divine (440)</option>
-              </select>
-            </div>
-          </form>
-        `,
-        buttons: {
-          roll: {
-            label: "Lancer",
-            callback: (html) => {
-              const difficulty = parseInt(html.find('[name="difficulty"]').val());
-              resolve(difficulty);
-            }
-          },
-          cancel: {
-            label: "Annuler",
-            callback: () => resolve(null)
-          }
-        },
-        default: "roll"
-      }).render(true);
-    });
   }
 
   /**
@@ -681,69 +636,82 @@ export class Rupture2069ActorSheet extends ActorSheet {
   }
 
   /**
-   * Lance un sort depuis l'onglet Magie avec les points de Nexus du personnage
+   * Lance un sort depuis l'onglet Magie avec jet de dés + gestion du Nexus
    */
   async _lancerSortDepuisMagie(sort) {
-    console.log('🎯 Lancement du sort depuis Magie:', sort.name);
-    
-    const coutNexus = sort.system.coutNexus || 1;
-    const nexusActuel = this.actor.system.nexus.value;
-    
-    // Vérifier si le personnage a assez de points
-    if (nexusActuel < coutNexus) {
-      ui.notifications.error(`Pas assez de points de Nexus ! (${nexusActuel}/${coutNexus} requis)`);
+    const systemData = sort.system;
+    const actor = this.actor;
+    const coutNexus = systemData.coutNexus || 1;
+
+    // Vérifier le Nexus disponible
+    if (actor.system.nexus.value < coutNexus) {
+      ui.notifications.error(`Pas assez de points de Nexus ! (${actor.system.nexus.value}/${coutNexus} requis)`);
       return;
     }
-    
-    console.log(`✅ Nexus disponibles: ${nexusActuel}/${this.actor.system.nexus.max}`);
-    
-    // Consommer les points de Nexus
-    const nouveauNexus = nexusActuel - coutNexus;
-    await this.actor.update({
-      'system.nexus.value': nouveauNexus
-    });
-    
-    console.log(`💫 ${coutNexus} point(s) consommé(s) - Reste: ${nouveauNexus}`);
-    
-    // Créer le message de chat
-    const messageData = {
-      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-      flavor: `<strong>${sort.name}</strong> (Rang ${sort.system.rang})`,
-      content: `
-        <div class="rupture2069 chat-card">
-          <div class="card-header">
-            <img src="${sort.img}" width="36" height="36"/>
-            <h3>${sort.name}</h3>
+
+    // Trouver la compétence configurée sur le sort
+    const competenceUtilisee = systemData.competenceUtilisee;
+    if (!competenceUtilisee) {
+      ui.notifications.warn("Aucune compétence n'est configurée pour ce sort. Éditez le sort pour en sélectionner une.");
+      return;
+    }
+
+    const competence = actor.items.find(i =>
+      i.type === 'competence' &&
+      (i.name.toLowerCase() === competenceUtilisee.toLowerCase() ||
+       i.name.toLowerCase().includes(competenceUtilisee.toLowerCase()))
+    );
+
+    if (!competence) {
+      ui.notifications.warn(`La compétence "${competenceUtilisee}" n'a pas été trouvée sur ce personnage.`);
+      return;
+    }
+
+    const niveau = competence.system.niveau || 0;
+    const caracteristique = competence.system.caracteristique;
+
+    // Effectuer le jet (difficulté fixe 80 — Moyenne)
+    const result = await actor.rollSkill(caracteristique, niveau, 80, `Sort: ${sort.name}`);
+
+    // Si réussite : consommer le Nexus et afficher les effets
+    if (result.success) {
+      await actor.update({ 'system.nexus.value': actor.system.nexus.value - coutNexus });
+
+      // Déterminer l'effet selon la marge du jet
+      let effetTexte = "";
+      const total = result.total;
+      if (total >= 440)      effetTexte = systemData.effets?.divine        || "";
+      else if (total >= 320) effetTexte = systemData.effets?.surhumaine    || "";
+      else if (total >= 280) effetTexte = systemData.effets?.absurde       || "";
+      else if (total >= 240) effetTexte = systemData.effets?.exceptionnelle || "";
+      else if (total >= 180) effetTexte = systemData.effets?.elite         || "";
+      else if (total >= 140) effetTexte = systemData.effets?.tresDifficile || "";
+      else if (total >= 120) effetTexte = systemData.effets?.difficile     || "";
+      else if (total >= 80)  effetTexte = systemData.effets?.moyenne       || "";
+      else if (total >= 40)  effetTexte = systemData.effets?.facile        || "";
+      else if (total >= 20)  effetTexte = systemData.effets?.routine       || "";
+
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor }),
+        content: `
+          <div class="rupture2069-spell">
+            <h4>${sort.name}</h4>
+            <div><strong>Source:</strong> ${systemData.source || "Non défini"}</div>
+            <div><strong>Rang:</strong> ${systemData.rang || 1}</div>
+            <div><strong>Maintien:</strong> ${systemData.maintien === 'oui' ? 'Oui ⏳ (bloque ' + coutNexus + ' Nexus)' : 'Non ⚡'}</div>
+            <hr style="border-color:rgba(255,255,255,0.3);margin:5px 0">
+            <div><strong>Résultat du jet:</strong> ${total}</div>
+            ${effetTexte ? `<div class="effet-sort"><strong>Effet:</strong> ${effetTexte}</div>` : ''}
+            ${systemData.description ? `<hr style="border-color:rgba(255,255,255,0.3);margin:5px 0"><div style="font-style:italic">${systemData.description}</div>` : ''}
           </div>
-          <div class="card-content">
-            <p><strong>Lanceur:</strong> ${this.actor.name}</p>
-            <p><strong>Nexus utilisé:</strong> ${coutNexus} point(s)</p>
-            <p><strong>Action:</strong> ${sort.system.action}</p>
-            <p><strong>Maintien:</strong> ${sort.system.maintien === 'oui' ? 'Oui ⏳' : 'Non ⚡'}</p>
-            ${sort.system.description ? `<hr/><p>${sort.system.description}</p>` : ''}
-          </div>
-        </div>
-      `
-    };
-    
-    await ChatMessage.create(messageData);
-    
-    // Si le sort n'est pas maintenu, recharger immédiatement les points
-    if (sort.system.maintien !== 'oui') {
-      console.log('⚡ Sort instantané - Recharge automatique du Nexus');
-      
-      // Attendre 500ms pour l'effet visuel
-      setTimeout(async () => {
-        const nexusRecharge = Math.min(nouveauNexus + coutNexus, this.actor.system.nexus.max);
-        await this.actor.update({
-          'system.nexus.value': nexusRecharge
-        });
-        ui.notifications.info(`${coutNexus} point(s) de Nexus rechargé(s) automatiquement (sort instantané)`);
-        console.log(`✨ Nexus rechargé: ${nexusRecharge}/${this.actor.system.nexus.max}`);
-      }, 500);
-    } else {
-      console.log('⏳ Sort maintenu - Les points restent consommés');
-      ui.notifications.warn(`${coutNexus} point(s) de Nexus consommé(s) (sort maintenu).`);
+        `
+      });
+
+      if (systemData.maintien !== 'oui') {
+        ui.notifications.info(`${coutNexus} point(s) de Nexus consommé(s)`);
+      } else {
+        ui.notifications.warn(`${coutNexus} point(s) de Nexus consommé(s) (sort maintenu). Rechargez manuellement.`);
+      }
     }
   }
 

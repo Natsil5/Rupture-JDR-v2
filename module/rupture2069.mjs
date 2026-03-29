@@ -126,10 +126,20 @@ export async function rollSkillCheck({
   const success = total >= difficulte;
   const margin = total - difficulte;
 
+  // Image et nom du personnage
+  const actorImg = actor.img || "icons/svg/mystery-man.svg";
+  const actorName = actor.name;
+
   // Créer le message de chat
   const flavor = `
     <div class="rupture2069-roll">
-      <h3>${label}</h3>
+      <div class="roll-header">
+        <img src="${actorImg}" alt="${actorName}" title="${actorName}"/>
+        <div class="roll-header-info">
+          <span class="roll-actor-name">${actorName}</span>
+          <h3>${label}</h3>
+        </div>
+      </div>
       <div class="roll-details">
         <div class="roll-line">
           <span class="roll-label">Jet (3d6×5):</span>
