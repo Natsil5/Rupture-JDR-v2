@@ -1,26 +1,251 @@
 {
   "Actor": {
-    "types": ["character", "pnj","monstre"],
+    "types": ["character", "npc"],
+    "templates": {
+      "base": {
+        "sante": {
+          "value": 40,
+          "max": 40,
+          "base": 40,
+          "multiplicateur": 0
+        },
+        "barriere": {
+          "value": 0,
+          "max": 0
+        },
+        "nexus": {
+          "value": 1,
+          "max": 1,
+          "base": 1
+        },
+        "regeneration": 10,
+        "initiative": {
+          "bonus": 0
+        },
+        "description": ""
+      }
+    },
     "character": {
-      "data": {
-        "abilities": {},
-        "stats": {}
+      "templates": ["base"],
+      "caracteristiques": {
+        "vigueur": {
+          "value": 50,
+          "bonus": 0
+        },
+        "coordination": {
+          "value": 50,
+          "bonus": 0
+        },
+        "logique": {
+          "value": 50,
+          "bonus": 0
+        },
+        "instinct": {
+          "value": 50,
+          "bonus": 0
+        },
+        "empathie": {
+          "value": 50,
+          "bonus": 0
+        },
+        "pouvoir": {
+          "value": 50,
+          "bonus": 0
+        }
+      },
+      "race": "",
+      "sexe": "",
+      "age": "",
+      "archetype": "",
+      "experience": {
+        "value": 0,
+        "total": 0
+      },
+      "niveau": 1,
+      "details": {
+        "taille": "",
+        "poids": "",
+        "apparence": "",
+        "histoire": ""
       }
     },
-    "pnj": {
-      "data": {
-        "abilities": {},
-        "stats": {}
-      }
-    },
-    "monstre": {
-      "data": {
-        "abilities": {},
-        "stats": {}
-      }
+    "npc": {
+      "templates": ["base"],
+      "caracteristiques": {
+        "vigueur": {
+          "value": 50
+        },
+        "coordination": {
+          "value": 50
+        },
+        "logique": {
+          "value": 50
+        },
+        "instinct": {
+          "value": 50
+        },
+        "empathie": {
+          "value": 50
+        },
+        "pouvoir": {
+          "value": 50
+        }
+      },
+      "type": "ordinaire"
     }
   },
   "Item": {
-    "types": ["item","armor","weapon"]
+    "types": ["competence", "arme", "armure", "bouclier", "equipement", "sort", "talent", "avantage", "desavantage"],
+    "templates": {
+      "base": {
+        "description": ""
+      }
+    },
+    "competence": {
+      "templates": ["base"],
+      "caracteristique": "vigueur",
+      "niveau": 0,
+      "coutXP": 1,
+      "categorie": "martiale",
+      "specialisation": "",
+      "champ": "martiale"
+    },
+    "arme": {
+      "templates": ["base"],
+      "degats": {
+        "base": 0
+      },
+      "ajouteVigueur": true,
+      "portee": {
+        "pratique": 0,
+        "max": 0
+      },
+      "magasin": 0,
+      "cadenceTir": 0,
+      "poids": 0,
+      "typeArme": "contact",
+      "typeDegats": "tranchant",
+      "munition": "",
+      "effets": "",
+      "peutParer": false,
+      "pv": {
+        "value": 0,
+        "max": 0
+      },
+      "competenceUtilisee": ""
+    },
+    "armure": {
+      "templates": ["base"],
+      "protection": {
+        "energie": 0,
+        "chaleur": 0,
+        "froid": 0,
+        "trauma": 0
+      },
+      "pv": {
+        "value": 0,
+        "max": 0
+      },
+      "poids": 0,
+      "emplacement": "torse"
+    },
+    "bouclier": {
+      "templates": ["base"],
+      "protection": 0,
+      "bonusParade": 0,
+      "pv": {
+        "value": 0,
+        "max": 0
+      },
+      "poids": 0,
+      "taille": "moyen"
+    },
+    "equipement": {
+      "templates": ["base"],
+      "quantite": 1,
+      "poids": 0,
+      "valeur": 0
+    },
+    "sort": {
+      "templates": ["base"],
+      "source": "",
+      "rang": 1,
+      "action": 1,
+      "coutNexus": 1,
+      "maintien": "non",
+      "effets": {
+        "routine": "",
+        "facile": "",
+        "moyenne": "",
+        "difficile": "",
+        "tresDifficile": "",
+        "elite": "",
+        "exceptionnelle": "",
+        "absurde": "",
+        "surhumaine": "",
+        "divine": ""
+      },
+      "competenceUtilisee": "canalisation"
+    },
+    "cad": {
+      "templates": ["base"],
+      "typeNexus": "psykhee",
+      "nexus1": {
+        "actif": true,
+        "used": false
+      },
+      "nexus2": {
+        "actif": true,
+        "used": false
+      },
+      "sorts": [],
+      "brancheAuGenerateur": false,
+      "generateurId": "",
+      "typeGenerateur": ""
+    },
+    "generateur": {
+      "templates": ["base"],
+      "nexus1": {
+        "type": "soma",
+        "actif": true,
+        "used": false
+      },
+      "nexus2": {
+        "type": "psykhee",
+        "actif": true,
+        "used": false
+      },
+      "nexus3": {
+        "type": "nous",
+        "actif": true,
+        "used": false
+      }
+    },
+    "talent": {
+      "templates": ["base"],
+      "coutXP": 25,
+      "competenceRequise": "",
+      "niveauRequis": 0,
+      "typeAction": "passif",
+      "races": {
+        "fae": true,
+        "humain": true,
+        "wendigo": true,
+        "worg": true
+      },
+      "effet": "",
+      "bonusNexus": 0
+    },
+    "avantage": {
+      "templates": ["base"],
+      "cout": 1,
+      "effet": "",
+      "bonusNexus": 0
+    },
+    "desavantage": {
+      "templates": ["base"],
+      "gain": 1,
+      "effet": ""
+    }
   }
 }

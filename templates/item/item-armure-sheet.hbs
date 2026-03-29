@@ -1,0 +1,49 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <header class="sheet-header flexrow">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+    <div class="header-fields">
+      <h1><input name="name" type="text" value="{{item.name}}" placeholder="Nom de l'armure"/></h1>
+    </div>
+  </header>
+  <section class="sheet-body">
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="system.description" rows="4">{{system.description}}</textarea>
+    </div>
+    <div class="grid grid-2col">
+      <div class="form-group">
+        <label>Protection Énergie</label>
+        <input type="number" name="system.protection.energie" value="{{system.protection.energie}}" data-dtype="Number"/>
+      </div>
+      <div class="form-group">
+        <label>Protection Chaleur</label>
+        <input type="number" name="system.protection.chaleur" value="{{system.protection.chaleur}}" data-dtype="Number"/>
+      </div>
+      <div class="form-group">
+        <label>Protection Froid</label>
+        <input type="number" name="system.protection.froid" value="{{system.protection.froid}}" data-dtype="Number"/>
+      </div>
+      <div class="form-group">
+        <label>Protection Trauma</label>
+        <input type="number" name="system.protection.trauma" value="{{system.protection.trauma}}" data-dtype="Number"/>
+      </div>
+    </div>
+    <div class="grid grid-2col">
+      <div class="form-group">
+        <label>PV actuels</label>
+        <input type="number" name="system.pv.value" value="{{system.pv.value}}" data-dtype="Number"/>
+      </div>
+      <div class="form-group">
+        <label>PV max</label>
+        <input type="number" name="system.pv.max" value="{{system.pv.max}}" data-dtype="Number"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Poids (kg)</label>
+      <input type="number" name="system.poids" value="{{system.poids}}" data-dtype="Number" step="0.1"/>
+    </div>
+    <div class="notes-section">
+      <p><strong>Rappel :</strong> L'armure prend 10% des dégâts réels (après réduction) en PV.</p>
+    </div>
+  </section>
+</form>

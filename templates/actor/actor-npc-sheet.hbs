@@ -1,0 +1,54 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
+    <div class="header-fields">
+      <h1><input name="name" type="text" value="{{actor.name}}" placeholder="Nom du PNJ"/></h1>
+      <div class="resources grid grid-2col">
+        <div class="resource">
+          <label>Santé</label>
+          <div class="resource-content flexrow">
+            <input type="text" name="system.sante.value" value="{{system.sante.value}}" data-dtype="Number"/>
+            <span> / </span>
+            <input type="text" name="system.sante.max" value="{{system.sante.max}}" data-dtype="Number"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="sheet-body">
+    <div class="caracteristiques-grid">
+      <div class="caracteristique">
+        <h3>VIG</h3>
+        <input type="text" name="system.caracteristiques.vigueur.value" value="{{system.caracteristiques.vigueur.value}}" data-dtype="Number"/>
+      </div>
+      <div class="caracteristique">
+        <h3>COO</h3>
+        <input type="text" name="system.caracteristiques.coordination.value" value="{{system.caracteristiques.coordination.value}}" data-dtype="Number"/>
+      </div>
+      <div class="caracteristique">
+        <h3>LOG</h3>
+        <input type="text" name="system.caracteristiques.logique.value" value="{{system.caracteristiques.logique.value}}" data-dtype="Number"/>
+      </div>
+      <div class="caracteristique">
+        <h3>INS</h3>
+        <input type="text" name="system.caracteristiques.instinct.value" value="{{system.caracteristiques.instinct.value}}" data-dtype="Number"/>
+      </div>
+      <div class="caracteristique">
+        <h3>EMP</h3>
+        <input type="text" name="system.caracteristiques.empathie.value" value="{{system.caracteristiques.empathie.value}}" data-dtype="Number"/>
+      </div>
+      <div class="caracteristique">
+        <h3>POU</h3>
+        <input type="text" name="system.caracteristiques.pouvoir.value" value="{{system.caracteristiques.pouvoir.value}}" data-dtype="Number"/>
+      </div>
+    </div>
+
+    <hr/>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="system.description" rows="10">{{system.description}}</textarea>
+    </div>
+  </section>
+</form>

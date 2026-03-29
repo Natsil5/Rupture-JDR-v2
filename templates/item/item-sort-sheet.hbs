@@ -1,0 +1,117 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <header class="sheet-header flexrow">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{item.name}}" placeholder="Nom du sort"/>
+      </h1>
+    </div>
+  </header>
+
+  <section class="sheet-body">
+    
+    {{!-- Compétence utilisée --}}
+    <div class="form-group highlight">
+      <label>Compétence utilisée pour lancer ce sort</label>
+      <select name="system.competenceUtilisee">
+        <option value="canalisation" {{#if (eq system.competenceUtilisee "canalisation")}}selected{{/if}}>Canalisation</option>
+        <option value="echo (noüs)" {{#if (eq system.competenceUtilisee "echo (noüs)")}}selected{{/if}}>Echo (Noüs)</option>
+        <option value="echo (psykhée)" {{#if (eq system.competenceUtilisee "echo (psykhée)")}}selected{{/if}}>Echo (Psykhée)</option>
+        <option value="echo (sôma)" {{#if (eq system.competenceUtilisee "echo (sôma)")}}selected{{/if}}>Echo (Sôma)</option>
+      </select>
+    </div>
+
+    <div class="grid grid-2col">
+      <div class="form-group">
+        <label>Source</label>
+        <input type="text" name="system.source" value="{{system.source}}" placeholder="Ex: Psykhée, Noüs..."/>
+      </div>
+
+      <div class="form-group">
+        <label>Rang</label>
+        <input type="number" name="system.rang" value="{{system.rang}}" data-dtype="Number" min="1"/>
+      </div>
+    </div>
+
+    <div class="grid grid-3col">
+      <div class="form-group">
+        <label>Action</label>
+        <input type="number" name="system.action" value="{{system.action}}" data-dtype="Number" min="1"/>
+      </div>
+
+      <div class="form-group">
+        <label>Coût Nexus</label>
+        <input type="number" name="system.coutNexus" value="{{system.coutNexus}}" data-dtype="Number" step="0.5"/>
+      </div>
+
+      <div class="form-group">
+        <label>Maintien</label>
+        <select name="system.maintien">
+          <option value="non" {{#if (eq system.maintien "non")}}selected{{/if}}>Non</option>
+          <option value="oui" {{#if (eq system.maintien "oui")}}selected{{/if}}>Oui</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="system.description" rows="4">{{system.description}}</textarea>
+    </div>
+
+    <h3>Effets selon le jet</h3>
+    <p class="notes">Les dégâts/effets dépendent de la difficulté atteinte lors du jet</p>
+
+    <div class="effets-grid">
+      <div class="form-group">
+        <label>20 - Routine</label>
+        <input type="text" name="system.effets.routine" value="{{system.effets.routine}}" placeholder="Ex: Fatigue 6"/>
+      </div>
+
+      <div class="form-group">
+        <label>40 - Facile</label>
+        <input type="text" name="system.effets.facile" value="{{system.effets.facile}}" placeholder="Ex: Fatigue 4"/>
+      </div>
+
+      <div class="form-group">
+        <label>80 - Moyenne</label>
+        <input type="text" name="system.effets.moyenne" value="{{system.effets.moyenne}}" placeholder="Ex: Fatigue 2"/>
+      </div>
+
+      <div class="form-group">
+        <label>120 - Difficile</label>
+        <input type="text" name="system.effets.difficile" value="{{system.effets.difficile}}" placeholder="Ex: Dégât de base 100"/>
+      </div>
+
+      <div class="form-group">
+        <label>140 - Très Difficile</label>
+        <input type="text" name="system.effets.tresDifficile" value="{{system.effets.tresDifficile}}" placeholder="Ex: Dégât de base 120"/>
+      </div>
+
+      <div class="form-group">
+        <label>180 - Elite</label>
+        <input type="text" name="system.effets.elite" value="{{system.effets.elite}}" placeholder="Ex: Dégât de base 140"/>
+      </div>
+
+      <div class="form-group">
+        <label>240 - Exceptionnelle</label>
+        <input type="text" name="system.effets.exceptionnelle" value="{{system.effets.exceptionnelle}}" placeholder="Ex: Dégât de base 160"/>
+      </div>
+
+      <div class="form-group">
+        <label>280 - Absurde</label>
+        <input type="text" name="system.effets.absurde" value="{{system.effets.absurde}}" placeholder="Ex: Dégât de base 180"/>
+      </div>
+
+      <div class="form-group">
+        <label>320 - Surhumaine</label>
+        <input type="text" name="system.effets.surhumaine" value="{{system.effets.surhumaine}}" placeholder="Ex: Dégât de base 200"/>
+      </div>
+
+      <div class="form-group">
+        <label>440 - Divine</label>
+        <input type="text" name="system.effets.divine" value="{{system.effets.divine}}" placeholder="Ex: Dégât de base 220"/>
+      </div>
+    </div>
+
+  </section>
+</form>

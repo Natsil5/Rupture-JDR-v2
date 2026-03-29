@@ -1,0 +1,60 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <header class="sheet-header flexrow">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+    <div class="header-fields">
+      <h1><input name="name" type="text" value="{{item.name}}" placeholder="Nom du bouclier"/></h1>
+    </div>
+  </header>
+  <section class="sheet-body">
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="system.description" rows="4">{{system.description}}</textarea>
+    </div>
+
+    <div class="grid grid-3col">
+      <div class="form-group">
+        <label>Protection</label>
+        <input type="number" name="system.protection" value="{{system.protection}}" data-dtype="Number"/>
+        <p class="notes">Réduit les dégâts de base de l'attaque</p>
+      </div>
+
+      <div class="form-group">
+        <label>Bonus Parade</label>
+        <input type="number" name="system.bonusParade" value="{{system.bonusParade}}" data-dtype="Number"/>
+        <p class="notes">Ajouté au jet de parade</p>
+      </div>
+
+      <div class="form-group">
+        <label>Taille</label>
+        <select name="system.taille">
+          <option value="petit" {{#if (eq system.taille "petit")}}selected{{/if}}>Petit</option>
+          <option value="moyen" {{#if (eq system.taille "moyen")}}selected{{/if}}>Moyen</option>
+          <option value="grand" {{#if (eq system.taille "grand")}}selected{{/if}}>Grand</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid grid-2col">
+      <div class="form-group">
+        <label>PV actuels du bouclier</label>
+        <input type="number" name="system.pv.value" value="{{system.pv.value}}" data-dtype="Number"/>
+      </div>
+
+      <div class="form-group">
+        <label>PV max du bouclier</label>
+        <input type="number" name="system.pv.max" value="{{system.pv.max}}" data-dtype="Number"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Poids (kg)</label>
+      <input type="number" name="system.poids" value="{{system.poids}}" data-dtype="Number" step="0.1"/>
+    </div>
+
+    <div class="notes-section">
+      <h3>Rappel des règles</h3>
+      <p><strong>Parade réussie :</strong> Le bouclier encaisse 100% des dégâts de base de l'arme (avant marge), réduits par sa Protection.</p>
+      <p><strong>Parade échouée :</strong> Le bouclier ne sert à rien, dégâts normaux.</p>
+    </div>
+  </section>
+</form>

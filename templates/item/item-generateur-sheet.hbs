@@ -1,0 +1,110 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <header class="sheet-header flexrow">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{item.name}}" placeholder="Nom du générateur"/>
+      </h1>
+    </div>
+  </header>
+
+  <section class="sheet-body">
+    
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="system.description" rows="4">{{system.description}}</textarea>
+    </div>
+
+    <hr/>
+
+    <h3>Configuration des 3 points de Nexus</h3>
+    <p class="notes">Activez et configurez chaque point de Nexus individuellement. Maximum 3 points.</p>
+
+    <div class="nexus-points-grid">
+      {{!-- Point 1 --}}
+      <div class="nexus-point">
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="system.nexus1.actif" {{#if system.nexus1.actif}}checked{{/if}}/>
+            <strong>Point 1</strong>
+          </label>
+        </div>
+        {{#if system.nexus1.actif}}
+        <div class="form-group">
+          <label>Type</label>
+          <select name="system.nexus1.type">
+            <option value="soma" {{#if (eq system.nexus1.type "soma")}}selected{{/if}}>Sôma</option>
+            <option value="psykhee" {{#if (eq system.nexus1.type "psykhee")}}selected{{/if}}>Psykhée</option>
+            <option value="nous" {{#if (eq system.nexus1.type "nous")}}selected{{/if}}>Noüs</option>
+          </select>
+        </div>
+        {{/if}}
+      </div>
+
+      {{!-- Point 2 --}}
+      <div class="nexus-point">
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="system.nexus2.actif" {{#if system.nexus2.actif}}checked{{/if}}/>
+            <strong>Point 2</strong>
+          </label>
+        </div>
+        {{#if system.nexus2.actif}}
+        <div class="form-group">
+          <label>Type</label>
+          <select name="system.nexus2.type">
+            <option value="soma" {{#if (eq system.nexus2.type "soma")}}selected{{/if}}>Sôma</option>
+            <option value="psykhee" {{#if (eq system.nexus2.type "psykhee")}}selected{{/if}}>Psykhée</option>
+            <option value="nous" {{#if (eq system.nexus2.type "nous")}}selected{{/if}}>Noüs</option>
+          </select>
+        </div>
+        {{/if}}
+      </div>
+
+      {{!-- Point 3 --}}
+      <div class="nexus-point">
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="system.nexus3.actif" {{#if system.nexus3.actif}}checked{{/if}}/>
+            <strong>Point 3</strong>
+          </label>
+        </div>
+        {{#if system.nexus3.actif}}
+        <div class="form-group">
+          <label>Type</label>
+          <select name="system.nexus3.type">
+            <option value="soma" {{#if (eq system.nexus3.type "soma")}}selected{{/if}}>Sôma</option>
+            <option value="psykhee" {{#if (eq system.nexus3.type "psykhee")}}selected{{/if}}>Psykhée</option>
+            <option value="nous" {{#if (eq system.nexus3.type "nous")}}selected{{/if}}>Noüs</option>
+          </select>
+        </div>
+        {{/if}}
+      </div>
+    </div>
+
+    <hr/>
+
+    <h3>Résumé</h3>
+    <div class="nexus-summary">
+      <div>
+        <strong>Sôma :</strong> 
+        {{#if system.nexus1.actif}}{{#if (eq system.nexus1.type "soma")}}1{{/if}}{{/if}}
+        {{#if system.nexus2.actif}}{{#if (eq system.nexus2.type "soma")}}+1{{/if}}{{/if}}
+        {{#if system.nexus3.actif}}{{#if (eq system.nexus3.type "soma")}}+1{{/if}}{{/if}}
+      </div>
+      <div>
+        <strong>Psykhée :</strong>
+        {{#if system.nexus1.actif}}{{#if (eq system.nexus1.type "psykhee")}}1{{/if}}{{/if}}
+        {{#if system.nexus2.actif}}{{#if (eq system.nexus2.type "psykhee")}}+1{{/if}}{{/if}}
+        {{#if system.nexus3.actif}}{{#if (eq system.nexus3.type "psykhee")}}+1{{/if}}{{/if}}
+      </div>
+      <div>
+        <strong>Noüs :</strong>
+        {{#if system.nexus1.actif}}{{#if (eq system.nexus1.type "nous")}}1{{/if}}{{/if}}
+        {{#if system.nexus2.actif}}{{#if (eq system.nexus2.type "nous")}}+1{{/if}}{{/if}}
+        {{#if system.nexus3.actif}}{{#if (eq system.nexus3.type "nous")}}+1{{/if}}{{/if}}
+      </div>
+    </div>
+
+  </section>
+</form>

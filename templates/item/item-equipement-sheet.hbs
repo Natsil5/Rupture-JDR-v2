@@ -1,0 +1,28 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <header class="sheet-header flexrow">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+    <div class="header-fields">
+      <h1><input name="name" type="text" value="{{item.name}}" placeholder="Nom de l'équipement"/></h1>
+    </div>
+  </header>
+  <section class="sheet-body">
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="system.description" rows="8">{{system.description}}</textarea>
+    </div>
+    <div class="grid grid-3col">
+      <div class="form-group">
+        <label>Quantité</label>
+        <input type="number" name="system.quantite" value="{{system.quantite}}" data-dtype="Number"/>
+      </div>
+      <div class="form-group">
+        <label>Poids (kg)</label>
+        <input type="number" name="system.poids" value="{{system.poids}}" data-dtype="Number" step="0.1"/>
+      </div>
+      <div class="form-group">
+        <label>Valeur (scrap)</label>
+        <input type="number" name="system.valeur" value="{{system.valeur}}" data-dtype="Number"/>
+      </div>
+    </div>
+  </section>
+</form>

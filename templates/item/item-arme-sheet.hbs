@@ -1,0 +1,141 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <header class="sheet-header flexrow">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{item.name}}" placeholder="Nom de l'arme"/>
+      </h1>
+    </div>
+  </header>
+
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item active" data-tab="description">Description</a>
+    <a class="item" data-tab="details">Détails</a>
+  </nav>
+
+  <section class="sheet-body">
+    
+    <div class="tab active" data-group="primary" data-tab="description">
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="system.description" rows="8">{{system.description}}</textarea>
+      </div>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="details">
+      
+      {{!-- Compétence utilisée --}}
+      <div class="form-group highlight">
+        <label>Compétence utilisée pour cette arme</label>
+        {{#if item.actor}}
+          <select name="system.competenceUtilisee">
+            <option value="">-- Sélectionner une compétence --</option>
+            {{#each item.actor.items as |comp|}}
+              {{#if (eq comp.type "competence")}}
+                {{#if (or (eq comp.name "Arme") (eq comp.name "Armes naturelles"))}}
+                  <option value="{{comp.name}}{{#if comp.system.specialisation}} ({{comp.system.specialisation}}){{/if}}">
+                    {{comp.name}}{{#if comp.system.specialisation}} ({{comp.system.specialisation}}){{/if}} - Niv. {{comp.system.niveau}}
+                  </option>
+                {{/if}}
+              {{/if}}
+            {{/each}}
+          </select>
+        {{else}}
+          <input type="text" name="system.competenceUtilisee" value="{{system.competenceUtilisee}}" placeholder="Ex: Arme (Fusil d'assaut)"/>
+          <p class="notes">Cette arme n'est pas équipée par un personnage. Vous pouvez entrer manuellement le nom de la compétence.</p>
+        {{/if}}
+      </div>
+
+      <div class="grid grid-2col">
+        <div class="form-group">
+          <label>Type d'arme</label>
+          <select name="system.typeArme">
+            <option value="contact" {{#if (eq system.typeArme "contact")}}selected{{/if}}>Contact</option>
+            <option value="distance" {{#if (eq system.typeArme "distance")}}selected{{/if}}>Distance</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Type de dégâts</label>
+          <select name="system.typeDegats">
+            <option value="tranchant" {{#if (eq system.typeDegats "tranchant")}}selected{{/if}}>Tranchant</option>
+            <option value="contondant" {{#if (eq system.typeDegats "contondant")}}selected{{/if}}>Contondant</option>
+            <option value="perforant" {{#if (eq system.typeDegats "perforant")}}selected{{/if}}>Perforant</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" name="system.ajouteVigueur" {{#if system.ajouteVigueur}}checked{{/if}}/>
+          Ajoute la Vigueur aux dégâts (armes de corps à corps)
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Dégâts de base</label>
+        <input type="number" name="system.degats.base" value="{{system.degats.base}}" data-dtype="Number"/>
+        <p class="notes">Dégâts finaux = Base + Vigueur (si coché ci-dessus)</p>
+      </div>
+
+      <div class="grid grid-2col">
+        <div class="form-group">
+          <label>Portée pratique (m)</label>
+          <input type="number" name="system.portee.pratique" value="{{system.portee.pratique}}" data-dtype="Number"/>
+        </div>
+
+        <div class="form-group">
+          <label>Portée max (m)</label>
+          <input type="number" name="system.portee.max" value="{{system.portee.max}}" data-dtype="Number"/>
+        </div>
+      </div>
+
+      <div class="grid grid-3col">
+        <div class="form-group">
+          <label>Magasin</label>
+          <input type="number" name="system.magasin" value="{{system.magasin}}" data-dtype="Number"/>
+        </div>
+
+        <div class="form-group">
+          <label>Cadence de Tir</label>
+          <input type="number" name="system.cadenceTir" value="{{system.cadenceTir}}" data-dtype="Number"/>
+        </div>
+
+        <div class="form-group">
+          <label>Poids (kg)</label>
+          <input type="number" name="system.poids" value="{{system.poids}}" data-dtype="Number" step="0.1"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" name="system.peutParer" {{#if system.peutParer}}checked{{/if}}/>
+          Peut parer (prend 10% des dégâts de base en cas de parade)
+        </label>
+      </div>
+
+      <div class="grid grid-2col">
+        <div class="form-group">
+          <label>PV actuels de l'arme</label>
+          <input type="number" name="system.pv.value" value="{{system.pv.value}}" data-dtype="Number"/>
+        </div>
+
+        <div class="form-group">
+          <label>PV max de l'arme</label>
+          <input type="number" name="system.pv.max" value="{{system.pv.max}}" data-dtype="Number"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Type de munition</label>
+        <input type="text" name="system.munition" value="{{system.munition}}" placeholder="Ex: 9mm, Flèches..."/>
+      </div>
+
+      <div class="form-group">
+        <label>Effets spéciaux</label>
+        <textarea name="system.effets" rows="3">{{system.effets}}</textarea>
+      </div>
+    </div>
+
+  </section>
+</form>

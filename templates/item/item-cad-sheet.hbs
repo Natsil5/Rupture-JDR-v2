@@ -1,0 +1,91 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <header class="sheet-header flexrow">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{item.name}}" placeholder="Nom du CAD"/>
+      </h1>
+    </div>
+  </header>
+
+  <section class="sheet-body">
+    
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="system.description" rows="3">{{system.description}}</textarea>
+    </div>
+
+    <hr/>
+
+    <h3>Type de Nexus du CAD</h3>
+    <div class="form-group">
+      <label>Tous les points de ce CAD sont de type :</label>
+      <select name="system.typeNexus">
+        <option value="soma" {{#if (eq system.typeNexus "soma")}}selected{{/if}}>Sôma</option>
+        <option value="psykhee" {{#if (eq system.typeNexus "psykhee")}}selected{{/if}}>Psykhée</option>
+        <option value="nous" {{#if (eq system.typeNexus "nous")}}selected{{/if}}>Noüs</option>
+      </select>
+    </div>
+
+    <hr/>
+
+    <h3>Configuration des points de Nexus</h3>
+    <p class="notes">Activez les points de Nexus disponibles (maximum 2).</p>
+
+    <div class="grid grid-2col">
+      {{!-- Point 1 --}}
+      <div class="form-group">
+        <label>
+          <input type="checkbox" name="system.nexus1.actif" {{#if system.nexus1.actif}}checked{{/if}}/>
+          <strong>Point 1</strong>
+        </label>
+      </div>
+
+      {{!-- Point 2 --}}
+      <div class="form-group">
+        <label>
+          <input type="checkbox" name="system.nexus2.actif" {{#if system.nexus2.actif}}checked{{/if}}/>
+          <strong>Point 2</strong>
+        </label>
+      </div>
+    </div>
+
+    <hr/>
+
+    <h3>Connexion au générateur</h3>
+    
+    {{#if system.brancheAuGenerateur}}
+    <div class="form-group highlight">
+      <p><strong>✓ Connecté à un générateur</strong></p>
+      <p style="font-size: 0.9em;">Type: {{#if (eq system.typeGenerateur "soma")}}Sôma{{/if}}{{#if (eq system.typeGenerateur "psykhee")}}Psykhée{{/if}}{{#if (eq system.typeGenerateur "nous")}}Noüs{{/if}}</p>
+      <p class="notes"><em>Changez la connexion dans l'onglet Echo du personnage</em></p>
+    </div>
+    {{else}}
+    <p class="notes"><em>Non connecté. Le CAD utilise ses propres points de Nexus.</em></p>
+    <p class="notes">Sélectionnez un générateur dans l'onglet Echo du personnage pour connecter ce CAD.</p>
+    {{/if}}
+
+    <hr/>
+
+    <h3>Sorts intégrés</h3>
+    <p class="notes">Glissez-déposez des sorts depuis l'onglet Magie pour les ajouter à ce CAD</p>
+
+    <div class="cad-sorts-list">
+      {{#if sortsComplets.length}}
+        {{#each sortsComplets as |sort index|}}
+          <div class="cad-sort-entry" data-sort-uuid="{{lookup ../system.sorts index}}">
+            <img src="{{sort.img}}" width="20" height="20" style="vertical-align: middle;"/>
+            <span class="sort-name">{{sort.name}}</span>
+            <span class="sort-info">(Rang {{sort.system.rang}}, Nexus: {{sort.system.coutNexus}})</span>
+            <a class="cad-sort-remove" data-sort-id="{{lookup ../system.sorts index}}" title="Retirer">
+              <i class="fas fa-times"></i>
+            </a>
+          </div>
+        {{/each}}
+      {{else}}
+        <p class="notes"><em>Aucun sort. Glissez-déposez des sorts ici.</em></p>
+      {{/if}}
+    </div>
+
+  </section>
+</form>

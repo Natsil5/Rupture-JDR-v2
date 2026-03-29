@@ -1,0 +1,68 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <header class="sheet-header flexrow">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{item.name}}" placeholder="Nom de la compétence"/>
+      </h1>
+    </div>
+  </header>
+
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item active" data-tab="description">Description</a>
+    <a class="item" data-tab="details">Détails</a>
+  </nav>
+
+  <section class="sheet-body">
+    
+    <div class="tab active" data-group="primary" data-tab="description">
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="system.description" rows="8">{{system.description}}</textarea>
+      </div>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="details">
+      <div class="form-group">
+        <label>Catégorie</label>
+        <select name="system.champ">
+          <option value="martiale" {{#if (eq system.champ "martiale")}}selected{{/if}}>Martiale</option>
+          <option value="mystique" {{#if (eq system.champ "mystique")}}selected{{/if}}>Mystique</option>
+          <option value="echo" {{#if (eq system.champ "echo")}}selected{{/if}}>Echo</option>
+          <option value="physique" {{#if (eq system.champ "physique")}}selected{{/if}}>Physique</option>
+          <option value="sociale" {{#if (eq system.champ "sociale")}}selected{{/if}}>Sociale</option>
+          <option value="technique" {{#if (eq system.champ "technique")}}selected{{/if}}>Technique</option>
+          <option value="utilitaire" {{#if (eq system.champ "utilitaire")}}selected{{/if}}>Utilitaire</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Caractéristique associée</label>
+        <select name="system.caracteristique">
+          <option value="vigueur" {{#if (eq system.caracteristique "vigueur")}}selected{{/if}}>Vigueur (VIG)</option>
+          <option value="coordination" {{#if (eq system.caracteristique "coordination")}}selected{{/if}}>Coordination (COO)</option>
+          <option value="logique" {{#if (eq system.caracteristique "logique")}}selected{{/if}}>Logique (LOG)</option>
+          <option value="instinct" {{#if (eq system.caracteristique "instinct")}}selected{{/if}}>Instinct (INS)</option>
+          <option value="empathie" {{#if (eq system.caracteristique "empathie")}}selected{{/if}}>Empathie (EMP)</option>
+          <option value="pouvoir" {{#if (eq system.caracteristique "pouvoir")}}selected{{/if}}>Pouvoir (POU)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Niveau</label>
+        <input type="number" name="system.niveau" value="{{system.niveau}}" data-dtype="Number"/>
+      </div>
+
+      <div class="form-group">
+        <label>Coût XP</label>
+        <input type="number" name="system.coutXP" value="{{system.coutXP}}" data-dtype="Number"/>
+      </div>
+
+      <div class="form-group">
+        <label>Spécialisation (optionnelle)</label>
+        <input type="text" name="system.specialisation" value="{{system.specialisation}}" placeholder="Ex: Fusil d'assaut, Alchimie..."/>
+      </div>
+    </div>
+
+  </section>
+</form>

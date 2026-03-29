@@ -1,0 +1,25 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <header class="sheet-header flexrow">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+    <div class="header-fields">
+      <h1><input name="name" type="text" value="{{item.name}}" placeholder="Nom du talent"/></h1>
+    </div>
+  </header>
+  <section class="sheet-body">
+    <div class="form-group">
+      <label>Effet</label>
+      <textarea name="system.effet" rows="8">{{system.effet}}</textarea>
+    </div>
+    <div class="grid grid-2col">
+      <div class="form-group">
+        <label>Coût XP</label>
+        <input type="number" name="system.coutXP" value="{{system.coutXP}}" data-dtype="Number"/>
+      </div>
+      <div class="form-group">
+        <label>Bonus Nexus</label>
+        <input type="number" name="system.bonusNexus" value="{{system.bonusNexus}}" data-dtype="Number" min="0" max="1"/>
+        <p class="notes">0 ou 1 (pour talents d'archétype)</p>
+      </div>
+    </div>
+  </section>
+</form>

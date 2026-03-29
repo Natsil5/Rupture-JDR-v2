@@ -1,0 +1,121 @@
+{
+  "RUPTURE": {
+    "SystemName": "Rupture 2069",
+    "Actor": {
+      "Character": "Personnage",
+      "NPC": "PNJ"
+    },
+    "Item": {
+      "Competence": "Compétence",
+      "Arme": "Arme",
+      "Armure": "Armure",
+      "Bouclier": "Bouclier",
+      "Equipement": "Équipement",
+      "Sort": "Sort",
+      "Talent": "Talent",
+      "Avantage": "Avantage",
+      "Desavantage": "Désavantage",
+      "Cad": "CAD",
+      "Generateur": "Générateur Echo"
+    },
+    "Caracteristiques": {
+      "Vigueur": "Vigueur",
+      "VigueurAbbr": "VIG",
+      "Coordination": "Coordination",
+      "CoordinationAbbr": "COO",
+      "Logique": "Logique",
+      "LogiqueAbbr": "LOG",
+      "Instinct": "Instinct",
+      "InstinctAbbr": "INS",
+      "Empathie": "Empathie",
+      "EmpathieAbbr": "EMP",
+      "Pouvoir": "Pouvoir",
+      "PouvoirAbbr": "POU"
+    },
+    "Stats": {
+      "Sante": "Santé",
+      "SanteBase": "Santé de base",
+      "Multiplicateur": "Multiplicateur PV",
+      "Barriere": "Barrière",
+      "Nexus": "Nexus",
+      "Regeneration": "Régénération",
+      "Initiative": "Initiative",
+      "BonusInitiative": "Bonus Initiative"
+    },
+    "Race": {
+      "Label": "Espèce",
+      "Humain": "Humain",
+      "Fae": "Faë",
+      "Wendigo": "Wendigo",
+      "Worg": "Worg"
+    },
+    "Infos": {
+      "Sexe": "Sexe",
+      "Age": "Âge",
+      "Archetype": "Archétype",
+      "Experience": "Expérience"
+    },
+    "Competences": {
+      "ChampMartial": "Champ Martial",
+      "ChampMystique": "Champ Mystique",
+      "ChampEcho": "Champ Echo",
+      "ChampUtilitaire": "Champ Utilitaire",
+      "Niveau": "Niveau",
+      "CoutXP": "Coût XP",
+      "Specialisation": "Spécialisation",
+      "CompetenceUtilisee": "Compétence utilisée"
+    },
+    "Combat": {
+      "Arme": "Arme",
+      "Degats": "Dégâts",
+      "DegatsBase": "Dégâts de base",
+      "Blessure": "Blessure",
+      "Trauma": "Trauma",
+      "AjouteVigueur": "Ajoute Vigueur",
+      "Portee": "Portée",
+      "PorteePratique": "Portée Pratique",
+      "PorteeMax": "Portée Max",
+      "Magasin": "Magasin",
+      "CadenceTir": "Cadence de Tir",
+      "PeutParer": "Peut parer",
+      "BonusParade": "Bonus Parade",
+      "Protection": "Protection",
+      "PV": "Points de Vie"
+    },
+    "Difficultes": {
+      "Routine": "Routine (20)",
+      "Facile": "Facile (40)",
+      "Moyenne": "Moyenne (80)",
+      "Difficile": "Difficile (120)",
+      "TresDifficile": "Très Difficile (140)",
+      "Elite": "Elite (180)",
+      "Exceptionnelle": "Exceptionnelle (240)",
+      "Absurde": "Absurde (280)",
+      "Surhumaine": "Surhumaine (320)",
+      "Divine": "Divine (440)"
+    },
+    "Roll": {
+      "Formula": "3d6×5 + Carac + Comp",
+      "RollCheck": "Jet de {competence}",
+      "RollInitiative": "Jet d'Initiative",
+      "Difficulte": "Difficulté",
+      "Resultat": "Résultat",
+      "Reussite": "Réussite !",
+      "Echec": "Échec"
+    },
+    "Details": {
+      "Taille": "Taille",
+      "Poids": "Poids",
+      "Apparence": "Apparence",
+      "Histoire": "Histoire",
+      "Description": "Description"
+    },
+    "Buttons": {
+      "Roll": "Lancer",
+      "RollInitiative": "Jet d'Init",
+      "Edit": "Éditer",
+      "Delete": "Supprimer",
+      "Create": "Créer"
+    }
+  }
+}

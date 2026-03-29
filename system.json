@@ -1,33 +1,79 @@
 {
-  "id": "rupture",
-  "title": "Rupture Game System",
-  "version": "0.1.0",
-  "description": "",
+  "id": "rupture2069",
+  "title": "Rupture 2069",
+  "description": "Système de jeu pour Rupture 2069 - Un jeu de rôle homebrew avec magie, technologie Echo et combat tactique",
+  "version": "2.0.0",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12"
+  },
   "authors": [
     {
-      "name": "Vharung",
-      "discord": "Vharung"
-    },{
-      "name": "Natsil",
-      "discord": "natsil"
-    }],
-  "license": "MIT",
-  "scripts": [],
-  "styles": ["style/rupture.css"],
-  "languages": [
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "lang/en.json"
+      "name": "Créateur Rupture 2069"
     }
   ],
-  "esmodules": ["module/rupture.js"],
-  "packs": [],
+  "esmodules": [
+    "module/rupture2069.mjs"
+  ],
+  "styles": [
+    "styles/rupture2069.css"
+  ],
+  "packs": [
+    {
+      "name": "capacites-raciales",
+      "label": "Capacités Raciales",
+      "path": "packs/capacites-raciales.db",
+      "type": "Item",
+      "system": "rupture2069"
+    },
+    {
+      "name": "avantages",
+      "label": "Avantages",
+      "path": "packs/avantages.db",
+      "type": "Item",
+      "system": "rupture2069"
+    },
+    {
+      "name": "desavantages",
+      "label": "Désavantages",
+      "path": "packs/desavantages.db",
+      "type": "Item",
+      "system": "rupture2069"
+    }
+  ],
+  "languages": [
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json"
+    }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "character": {},
+      "npc": {}
+    },
+    "Item": {
+      "competence": {},
+      "arme": {},
+      "armure": {},
+      "bouclier": {},
+      "equipement": {},
+      "sort": {},
+      "talent": {},
+      "avantage": {},
+      "desavantage": {},
+      "cad": {},
+      "generateur": {}
+    }
+  },
+  "grid": {
+    "distance": 1,
+    "units": "m"
+  },
+  "primaryTokenAttribute": "sante",
+  "secondaryTokenAttribute": "barriere",
   "url": "https://github.com/Natsil5/Rupture-JDR-v2",
   "manifest": "https://raw.githubusercontent.com/Natsil5/Rupture-JDR-v2/refs/heads/main/system.json",
-  "download": "https://github.com/Natsil5/Rupture-JDR-v2/archive/refs/heads/main.zip",
-  "grid":{
-    "dDistance": 1,
-    "units": "m"
-  }
+  "download": "https://github.com/Natsil5/Rupture-JDR-v2/archive/refs/heads/main.zip"
 }

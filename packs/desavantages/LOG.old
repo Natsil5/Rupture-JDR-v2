@@ -1,0 +1,17 @@
+2026/03/29-08:55:10.980 1598 Recovering log #6
+2026/03/29-08:55:10.980 1598 Level-0 table #8: started
+2026/03/29-08:55:11.067 1598 Level-0 table #8: 5202 bytes OK
+2026/03/29-08:55:11.210 1598 Delete type=0 #6
+2026/03/29-08:55:11.210 1598 Delete type=3 #4
+2026/03/29-09:16:10.038 20dc Level-0 table #11: started
+2026/03/29-09:16:10.069 20dc Level-0 table #11: 5202 bytes OK
+2026/03/29-09:16:10.098 20dc Delete type=0 #9
+2026/03/29-09:16:10.215 20dc Manual compaction at level-0 from '!items!Allergie0000000010' @ 72057594037927935 : 1 .. '!items.effects!bNispI8oVDBQCsCU' @ 0 : 0; will stop at '!items.effects!bNispI8oVDBQCsCU' @ 50 : 0
+2026/03/29-09:16:10.215 20dc Compacting 3@0 + 0@1 files
+2026/03/29-09:16:10.249 20dc Generated table #12@0: 27 keys, 4446 bytes
+2026/03/29-09:16:10.249 20dc Compacted 3@0 + 0@1 files => 4446 bytes
+2026/03/29-09:16:10.290 20dc compacted to: files[ 0 1 0 0 0 0 0 ]
+2026/03/29-09:16:10.290 20dc Delete type=2 #5
+2026/03/29-09:16:10.290 20dc Delete type=2 #8
+2026/03/29-09:16:10.290 20dc Delete type=2 #11
+2026/03/29-09:16:10.373 20dc Manual compaction at level-0 from '!items.effects!bNispI8oVDBQCsCU' @ 50 : 0 .. '!items.effects!bNispI8oVDBQCsCU' @ 0 : 0; will stop at (end)

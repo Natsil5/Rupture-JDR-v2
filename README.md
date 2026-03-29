@@ -1,1 +1,0 @@
-# Rupture-JDR-v2
