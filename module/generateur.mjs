@@ -2,7 +2,7 @@
  * Générateur d'ennemis
  * Le MJ choisit l'espèce, le style, le nombre et le niveau ; chaque ennemi est une fiche de personnage complète.
  * Règles respectées :
- * - caractéristiques : 20 partout + 250 points, de 10 en 10, 80 au maximum avant les bonus d'espèce
+ * - caractéristiques : 300 points au total, de 10 en 10, de 20 à 80 chacune, puis les bonus d'espèce
  * - capacités d'espèce du compendium ; un humain ne canalise pas ; un worg n'a pas de mains
  * - armes chiffrées du Tableau, griffes et crocs des espèces ; armure naturelle comptée à moitié sous une armure
  * - santé, régénération et Nexus sont calculés par la fiche, comme pour un personnage
@@ -42,13 +42,14 @@ export const NIVEAUX = {
   maitre: { nom: "Maître", principal: [104, 118], appui: [82, 98], secondaire: [58, 74], autre: [25, 40], armure: 3 }
 };
 
-/** Répartitions possibles, de la plus haute à la plus basse : total 370 = 6 × 20 + 250 */
+/** Répartitions possibles, de la plus haute à la plus basse : 300 points au total */
 export const REPARTITIONS = [
-  [80, 80, 70, 60, 40, 40],
-  [80, 70, 70, 60, 50, 40],
-  [80, 70, 60, 60, 50, 50],
-  [80, 80, 60, 50, 50, 50],
-  [70, 70, 70, 60, 50, 50]
+  [80, 70, 50, 40, 30, 30],
+  [80, 60, 60, 40, 30, 30],
+  [80, 60, 50, 40, 40, 30],
+  [70, 70, 50, 40, 40, 30],
+  [70, 60, 60, 40, 40, 30],
+  [70, 60, 50, 50, 40, 30]
 ];
 
 /* -------------------------------------------- */

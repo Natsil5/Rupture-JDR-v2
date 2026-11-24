@@ -19,7 +19,7 @@ import { ajouterBouton, creerEnnemis, ouvrirGenerateur } from "./generateur.mjs"
 /* -------------------------------------------- */
 
 Hooks.once('init', async function() {
-  console.log('Rupture 2069 | Initialisation du système v2.4.0');
+  console.log('Rupture 2069 | Initialisation du système v2.4.1');
 
   // Ajouter namespace global
   game.rupture2069 = {
