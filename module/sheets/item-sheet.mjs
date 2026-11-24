@@ -42,12 +42,12 @@ export class Rupture2069ItemSheet extends ItemSheet {
     // Pour les CADs, récupérer les objets sorts complets
     if (this.item.type === 'cad') {
       const sortsComplets = [];
-      
+
       console.log('🔍 CAD getData:', {
         sortsUuids: this.item.system.sorts,
         sortsLength: this.item.system.sorts ? this.item.system.sorts.length : 0
       });
-      
+
       if (this.item.system.sorts) {
         for (let sortUuid of this.item.system.sorts) {
           try {
@@ -61,7 +61,7 @@ export class Rupture2069ItemSheet extends ItemSheet {
           }
         }
       }
-      
+
       context.sortsComplets = sortsComplets;
       console.log('📦 Total sorts dans context:', sortsComplets.length);
     }
@@ -108,12 +108,12 @@ export class Rupture2069ItemSheet extends ItemSheet {
     if (!this.isEditable) return;
 
     // Gestionnaires d'événements spécifiques
-    
+
     // Ajouter ou supprimer un bonus donné par un sort
     html.find('.bonus-ajouter').click(async (ev) => {
       ev.preventDefault();
       await this.item.update({
-        'system.bonus': [...lignesBonus(this.item), { type: 'carac', carac: 'vigueur', valeur: 0, palier: 'moyenne' }]
+        'system.bonus': [...lignesBonus(this.item), { type: 'carac', carac: 'vigueur', valeur: 0, palier: 'routine' }]
       });
     });
     html.find('.bonus-supprimer').click(async (ev) => {
@@ -125,7 +125,7 @@ export class Rupture2069ItemSheet extends ItemSheet {
     // Permettre le drop de sorts sur les CADs
     if (this.item.type === 'cad') {
       html.on('drop', this._onDropSort.bind(this));
-      
+
       // Supprimer un sort du CAD
       html.find('.cad-sort-remove').click(async (ev) => {
         ev.preventDefault();
@@ -142,30 +142,30 @@ export class Rupture2069ItemSheet extends ItemSheet {
    */
   async _onDropSort(event) {
     event.preventDefault();
-    
+
     try {
       const data = JSON.parse(event.originalEvent.dataTransfer.getData('text/plain'));
-      
+
       // Vérifier que c'est bien un sort
       if (data.type !== 'Item') return;
-      
+
       const item = await fromUuid(data.uuid);
       if (!item || item.type !== 'sort') {
         ui.notifications.warn("Vous ne pouvez ajouter que des sorts à un CAD.");
         return;
       }
-      
+
       // Ajouter le sort au CAD en stockant son UUID
       const currentSorts = this.item.system.sorts || [];
       if (currentSorts.includes(data.uuid)) {
         ui.notifications.info("Ce sort est déjà dans le CAD.");
         return;
       }
-      
+
       const newSorts = [...currentSorts, data.uuid];
       await this.item.update({'system.sorts': newSorts});
       ui.notifications.info(`${item.name} ajouté au CAD !`);
-      
+
     } catch (err) {
       console.error('Erreur lors du drop:', err);
     }

@@ -8,7 +8,7 @@ import { Rupture2069Item } from "./documents/item.mjs";
 import { Rupture2069Combat } from "./documents/combat.mjs";
 import { Rupture2069ActorSheet } from "./sheets/actor-sheet.mjs";
 import { Rupture2069ItemSheet } from "./sheets/item-sheet.mjs";
-import { DES, DIFFICULTE_DEFAUT, detailModificateur, modificateurCarac } from "./regles.mjs";
+import { DES, detailModificateur, modificateurCarac } from "./regles.mjs";
 import { activerBoutons } from "./bonus.mjs";
 import { activerAnnulation, annuler, enregistrerConversion, ouvrirConversion, proposerConversion } from "./conversion.mjs";
 import { COMPETENCES_DE_BASE } from "./competences.mjs";
@@ -19,7 +19,7 @@ import { ajouterBouton, creerEnnemis, ouvrirGenerateur } from "./generateur.mjs"
 /* -------------------------------------------- */
 
 Hooks.once('init', async function() {
-  console.log('Rupture 2069 | Initialisation du système v2.4.1');
+  console.log('Rupture 2069 | Initialisation du système v2.5.0');
 
   // Ajouter namespace global
   game.rupture2069 = {
@@ -114,29 +114,29 @@ function registerHandlebarsHelpers() {
 
 /**
  * Effectue un jet de compétence dans le système Rupture 2069
- * Formule: 3d10 + Caractéristique ÷ 3 + Compétence vs Difficulté
+ * Formule: 3d10 + Caractéristique ÷ 3 + Compétence
+ * Le jet donne seulement son résultat ; la difficulté ne sert que si on en donne une (macro)
  */
 export async function rollSkillCheck({
   actor,
   caracteristique,
   competence = 0,
-  difficulte = DIFFICULTE_DEFAUT,
+  difficulte = null,
   label = "Test"
 } = {}) {
-  
+
   // Récupérer la caractéristique et son modificateur (bonus compris)
   const carac = actor.system.caracteristiques[caracteristique];
   const modCarac = modificateurCarac(carac);
   competence = Number(competence) || 0;
 
-  // Formule du jet: 3d10
-  const roll = await new Roll(DES).evaluate();
-  const rollTotal = roll.total;
-
-  // Calculer le résultat total
-  const total = rollTotal + modCarac + competence;
-  const success = total >= difficulte;
-  const margin = total - difficulte;
+  // Formule du jet: 3d10 + modificateur + compétence (la case de Foundry affiche le résultat)
+  const roll = await new Roll(`${DES} + ${modCarac} + ${competence}`).evaluate();
+  const total = roll.total;
+  const rollTotal = total - modCarac - competence;
+  const avecDifficulte = Number.isFinite(difficulte);
+  const success = avecDifficulte ? total >= difficulte : null;
+  const margin = avecDifficulte ? total - difficulte : null;
 
   // Image et nom du personnage
   const actorImg = actor.img || "icons/svg/mystery-man.svg";
@@ -166,9 +166,10 @@ export async function rollSkillCheck({
           <span class="roll-value">${competence}</span>
         </div>
         <div class="roll-line total">
-          <span class="roll-label">Total:</span>
+          <span class="roll-label">Résultat:</span>
           <span class="roll-value">${total}</span>
         </div>
+        ${avecDifficulte ? `
         <div class="roll-line difficulty">
           <span class="roll-label">Difficulté:</span>
           <span class="roll-value">${difficulte}</span>
@@ -176,7 +177,7 @@ export async function rollSkillCheck({
         <div class="roll-result ${success ? 'success' : 'failure'}">
           ${success ? '✓ Réussite' : '✗ Échec'}
           ${success ? ` (Écart: +${margin})` : ` (Écart: ${margin})`}
-        </div>
+        </div>` : ""}
       </div>
     </div>
   `;
@@ -200,12 +201,10 @@ export async function rollInitiative(actor) {
   const modCoordination = modificateurCarac(coordination);
   const modInstinct = modificateurCarac(instinct);
 
-  // Formule du jet: 3d10
-  const roll = await new Roll(DES).evaluate();
-  const rollTotal = roll.total;
-
-  // Calculer le résultat total
-  const total = rollTotal + modCoordination + modInstinct + bonus;
+  // Formule du jet: 3d10 + modificateurs + bonus (la case de Foundry affiche le résultat)
+  const roll = await new Roll(`${DES} + ${modCoordination} + ${modInstinct} + ${bonus}`).evaluate();
+  const total = roll.total;
+  const rollTotal = total - modCoordination - modInstinct - bonus;
 
   // Créer le message de chat
   const flavor = `
@@ -264,7 +263,7 @@ export async function createDefaultCompetences(actor) {
         specialisation: comp.specialisation || ""
       }
     };
-    
+
     const item = await Item.create(itemData, {parent: actor});
     createdCompetences.push(item);
   }

@@ -1,4 +1,4 @@
-import { DES, DIFFICULTE_DEFAUT, modificateurCarac, totalCarac } from "../regles.mjs";
+import { DES, modificateurCarac, totalCarac } from "../regles.mjs";
 
 /**
  * Classe Actor étendue pour Rupture 2069
@@ -102,7 +102,7 @@ export class Rupture2069Actor extends Actor {
     const santeMax = Math.floor(santeBase * (1 + multCapped * 0.1));
 
     systemData.sante.max = santeMax;
-    
+
     // S'assurer que la santé actuelle ne dépasse pas le maximum
     if (systemData.sante.value > santeMax) {
       systemData.sante.value = santeMax;
@@ -184,9 +184,9 @@ export class Rupture2069Actor extends Actor {
   /**
    * Effectue un jet de compétence
    */
-  async rollSkill(caracteristique, competenceNiveau = 0, difficulte = DIFFICULTE_DEFAUT, label = "Test") {
+  async rollSkill(caracteristique, competenceNiveau = 0, difficulte = null, label = "Test") {
     const { rollSkillCheck } = game.rupture2069;
-    
+
     return await rollSkillCheck({
       actor: this,
       caracteristique,
@@ -213,7 +213,7 @@ export class Rupture2069Actor extends Actor {
 
     // Créer la formule personnalisée
     const rollFormula = `${DES} + ${modificateurCarac(coordination)} + ${modificateurCarac(instinct)} + ${bonus}`;
-    
+
     return new Roll(rollFormula, this.getRollData());
   }
 }

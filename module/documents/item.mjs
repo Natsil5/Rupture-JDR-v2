@@ -1,4 +1,5 @@
-import { DIFFICULTE_DEFAUT, estEcho, palierAtteint, totalCarac } from "../regles.mjs";
+import { estEcho, totalCarac } from "../regles.mjs";
+import { issueSort, messageRate } from "../sorts.mjs";
 import { appliquerBonus, preparerBonus } from "../bonus.mjs";
 
 /**
@@ -107,14 +108,11 @@ export class Rupture2069Item extends Item {
     const systemData = this.system;
     const actor = this.actor;
 
-    // Difficulté par défaut : Moyenne
-    const difficulte = DIFFICULTE_DEFAUT;
-
     // Effectuer le jet
     return await actor.rollSkill(
       systemData.caracteristique,
       systemData.niveau,
-      difficulte,
+      null,
       `${this.name}${systemData.specialisation ? ' (' + systemData.specialisation + ')' : ''}`
     );
   }
@@ -128,7 +126,7 @@ export class Rupture2069Item extends Item {
 
     // Trouver la compétence configurée sur l'arme
     const competenceUtilisee = systemData.competenceUtilisee;
-    
+
     if (!competenceUtilisee) {
       ui.notifications.warn("Aucune compétence n'est configurée pour cette arme. Éditez l'arme pour en sélectionner une.");
       return;
@@ -149,36 +147,30 @@ export class Rupture2069Item extends Item {
     const niveau = competence.system.niveau || 0;
     const caracteristique = competence.system.caracteristique;
 
-    // Difficulté par défaut : Moyenne
-    const difficulte = DIFFICULTE_DEFAUT;
-
     // Effectuer le jet d'attaque
-    const result = await actor.rollSkill(caracteristique, niveau, difficulte, `Attaque: ${this.name}`);
+    const result = await actor.rollSkill(caracteristique, niveau, null, `Attaque: ${this.name}`);
 
-    // Si réussite, afficher les dégâts
-    if (result.success) {
-      // Calculer les dégâts
-      let degatsBase = systemData.degats.base || 0;
-      
-      // Ajouter la Vigueur si l'arme l'utilise
-      if (systemData.ajouteVigueur) {
-        const vigueur = totalCarac(actor.system.caracteristiques.vigueur);
-        degatsBase += vigueur;
-      }
+    // Afficher les dégâts de l'arme (la marge se calcule contre la défense)
+    let degatsBase = systemData.degats.base || 0;
 
-      const degatMessage = `
-        <div class="rupture2069-damage">
-          <h4>Dégâts de ${this.name}</h4>
-          <div>Dégâts totaux: <strong>${degatsBase}</strong></div>
-          ${systemData.ajouteVigueur ? '<div><em>(Vigueur incluse)</em></div>' : ''}
-        </div>
-      `;
-
-      ChatMessage.create({
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        content: degatMessage
-      });
+    // Ajouter la Vigueur si l'arme l'utilise
+    if (systemData.ajouteVigueur) {
+      const vigueur = totalCarac(actor.system.caracteristiques.vigueur);
+      degatsBase += vigueur;
     }
+
+    const degatMessage = `
+      <div class="rupture2069-damage">
+        <h4>Dégâts de ${this.name}</h4>
+        <div>Dégâts totaux: <strong>${degatsBase}</strong></div>
+        ${systemData.ajouteVigueur ? '<div><em>(Vigueur incluse)</em></div>' : ''}
+      </div>
+    `;
+
+    ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      content: degatMessage
+    });
 
     return result;
   }
@@ -204,7 +196,7 @@ export class Rupture2069Item extends Item {
 
     // Trouver la compétence configurée sur le sort
     const competenceUtilisee = systemData.competenceUtilisee;
-    
+
     if (!competenceUtilisee) {
       ui.notifications.warn("Aucune compétence n'est configurée pour ce sort.");
       return;
@@ -225,22 +217,19 @@ export class Rupture2069Item extends Item {
     const niveau = competence.system.niveau || 0;
     const caracteristique = competence.system.caracteristique;
 
-    // Lancer directement avec la difficulté par défaut (Moyenne)
-    const difficulte = DIFFICULTE_DEFAUT;
-
     // Effectuer le jet de magie
-    const result = await actor.rollSkill(caracteristique, niveau, difficulte, `Sort: ${this.name}`);
+    const result = await actor.rollSkill(caracteristique, niveau, null, `Sort: ${this.name}`);
 
-    // Si réussite, consommer le Nexus et afficher les effets selon le jet
-    if (result.success) {
+    // Le résultat donne l'effet ; s'il n'atteint rien, aucun Nexus n'est consommé
+    const total = result.total;
+    const issue = issueSort(this, total);
+    if (issue.rate) {
+      ui.notifications.info(messageRate(this, total, issue.minimum));
+    } else {
       actor.update({
         'system.nexus.value': actor.system.nexus.value - systemData.coutNexus
       });
-
-      // Déterminer l'effet selon le résultat du jet
-      const total = result.total;
-      const palier = palierAtteint(total);
-      const effetTexte = palier ? (systemData.effets[palier.cle] || palier.effet) : "";
+      const effetTexte = issue.texte;
 
       const bonus = preparerBonus(this, actor, total);
 
@@ -252,7 +241,7 @@ export class Rupture2069Item extends Item {
           <div><strong>Maintien:</strong> ${systemData.maintien === "oui" ? "Oui (bloque " + systemData.coutNexus + " Nexus)" : "Non"}</div>
           <hr style="border-color: rgba(255,255,255,0.3); margin: 5px 0;">
           <div><strong>Résultat du jet:</strong> ${total}</div>
-          <div class="effet-sort"><strong>Effet:</strong> ${effetTexte}</div>
+          ${effetTexte ? `<div class="effet-sort"><strong>Effet:</strong> ${effetTexte}</div>` : ""}
           ${bonus?.html ?? ""}
           <hr style="border-color: rgba(255,255,255,0.3); margin: 5px 0;">
           <div class="description" style="font-style: italic; margin-top: 5px;">${systemData.description}</div>
@@ -275,7 +264,7 @@ export class Rupture2069Item extends Item {
    */
   _displayInChat() {
     const itemData = this.system;
-    
+
     const content = `
       <div class="rupture2069-item">
         <h3>${this.name}</h3>

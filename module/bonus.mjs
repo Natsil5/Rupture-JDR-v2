@@ -4,7 +4,7 @@
  * - Modificateur : compte seulement dans les jets
  * Le bonus est un effet actif posé sur la cible : on l'enlève depuis l'onglet Effets ou depuis le chat.
  */
-import { CARACTERISTIQUES, DIFFICULTES, DIFFICULTE_DEFAUT, signe } from "./regles.mjs";
+import { CARACTERISTIQUES, DIFFICULTES, signe } from "./regles.mjs";
 
 export const TYPES_BONUS = {
   carac: { nom: "Caractéristique", champ: "bonusSort" },
@@ -18,8 +18,7 @@ export function optionsBonus() {
   return {
     types: Object.entries(TYPES_BONUS).map(([cle, t]) => ({ cle, nom: t.nom })),
     caracs: Object.entries(CARACTERISTIQUES).map(([cle, nom]) => ({ cle, nom })),
-    // Un sort n'a d'effet qu'à partir de la difficulté par défaut
-    paliers: DIFFICULTES.filter(d => d.seuil >= DIFFICULTE_DEFAUT).map(d => ({ cle: d.cle, nom: `${d.nom} (${d.seuil})` }))
+    paliers: DIFFICULTES.map(d => ({ cle: d.cle, nom: `${d.nom} (${d.seuil})` }))
   };
 }
 
@@ -33,7 +32,7 @@ export function bonusObtenus(sort, total) {
   const obtenus = new Map();
   for (const ligne of lignesBonus(sort)) {
     const valeur = Number(ligne.valeur) || 0;
-    const seuil = DIFFICULTES.find(d => d.cle === ligne.palier)?.seuil ?? DIFFICULTE_DEFAUT;
+    const seuil = DIFFICULTES.find(d => d.cle === ligne.palier)?.seuil ?? 0;
     if (!valeur || total < seuil || !TYPES_BONUS[ligne.type] || !CARACTERISTIQUES[ligne.carac]) continue;
     const cle = `system.caracteristiques.${ligne.carac}.${TYPES_BONUS[ligne.type].champ}`;
     const deja = obtenus.get(cle);

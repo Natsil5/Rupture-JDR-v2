@@ -74,9 +74,6 @@ export const DIFFICULTES = [
   { cle: "divine",         nom: "Divine",         seuil: 146, effet: "Effet divin" }
 ];
 
-/** Difficulté par défaut : Moyenne */
-export const DIFFICULTE_DEFAUT = DIFFICULTES.find(d => d.cle === "moyenne").seuil;
-
 /** Palier le plus haut atteint par un résultat, ou undefined sous Routine */
 export function palierAtteint(total) {
   return DIFFICULTES.filter(d => total >= d.seuil).pop();

@@ -1,4 +1,5 @@
-import { DIFFICULTE_DEFAUT, estEcho, modificateurCarac, nomSimple, palierAtteint, signe, totalCarac } from "../regles.mjs";
+import { estEcho, modificateurCarac, nomSimple, signe, totalCarac } from "../regles.mjs";
+import { issueSort, messageRate } from "../sorts.mjs";
 import { appliquerBonus, changementsEffet, libelleBonus, preparerBonus } from "../bonus.mjs";
 import { CAPACITES_ESPECE, MODIFICATEURS_ESPECE } from "../especes.mjs";
 
@@ -76,7 +77,7 @@ export class Rupture2069ActorSheet extends ActorSheet {
     // Itérer sur les items
     for (let i of context.items) {
       i.img = i.img || DEFAULT_TOKEN;
-      
+
       // Ajouter à la catégorie appropriée
       switch (i.type) {
         case 'competence':
@@ -152,7 +153,7 @@ export class Rupture2069ActorSheet extends ActorSheet {
           try {
             // Utiliser fromUuidSync pour récupérer le sort depuis n'importe où
             const sort = fromUuidSync(uuid);
-            
+
             if (sort && sort.type === 'sort') {
               console.log('  ✅ Sort trouvé:', sort.name);
               cad.sortsResolus.push({
@@ -171,7 +172,7 @@ export class Rupture2069ActorSheet extends ActorSheet {
         }
       }
     }
-    
+
     console.log('🔍 Sorts disponibles (onglet Magie):', sorts.length);
     console.log('📋 CADs avec sorts résolus:', cads.map(c => ({
       name: c.name,
@@ -185,7 +186,7 @@ export class Rupture2069ActorSheet extends ActorSheet {
    */
   _prepareCaracteristiques(context) {
     const caracteristiques = context.system.caracteristiques;
-    
+
     context.caracteristiquesArray = [
       { key: 'vigueur', label: 'VIG', ...caracteristiques.vigueur },
       { key: 'coordination', label: 'COO', ...caracteristiques.coordination },
@@ -265,14 +266,14 @@ export class Rupture2069ActorSheet extends ActorSheet {
     html.find('.item-edit').click(ev => {
       ev.preventDefault();
       ev.stopPropagation();
-      
+
       // Essayer de récupérer l'ID depuis le bouton lui-même ou depuis le parent
       let itemId = $(ev.currentTarget).data("item-id");
       if (!itemId) {
         const li = $(ev.currentTarget).closest(".item, .cad-sous-generateur, .sort-list-item");
         itemId = li.data("item-id") || li.data("itemId");
       }
-      
+
       const item = this.actor.items.get(itemId);
       if (item) {
         item.sheet.render(true);
@@ -285,14 +286,14 @@ export class Rupture2069ActorSheet extends ActorSheet {
     html.find('.item-delete').click(async (ev) => {
       ev.preventDefault();
       ev.stopPropagation();
-      
+
       // Essayer de récupérer l'ID depuis le bouton lui-même ou depuis le parent
       let itemId = $(ev.currentTarget).data("item-id");
       if (!itemId) {
         const li = $(ev.currentTarget).closest(".item, .cad-sous-generateur, .sort-list-item");
         itemId = li.data("item-id") || li.data("itemId");
       }
-      
+
       const item = this.actor.items.get(itemId);
       if (item) {
         await item.delete();
@@ -307,9 +308,9 @@ export class Rupture2069ActorSheet extends ActorSheet {
       const li = $(ev.currentTarget).closest(".item");
       const itemId = li.data("item-id") || li.data("itemId");
       const item = this.actor.items.get(itemId);
-      
+
       if (!item) return;
-      
+
       // Si c'est un sort, utiliser le système de lancement avec Nexus du personnage
       if (item.type === 'sort') {
         await this._lancerSortDepuisMagie(item);
@@ -337,7 +338,7 @@ export class Rupture2069ActorSheet extends ActorSheet {
       ev.preventDefault();
       const index = parseInt($(ev.currentTarget).data('index'));
       const currentValue = this.actor.system.nexus.value;
-      
+
       // Si on clique sur un cercle plein, on le vide (et tous ceux après)
       // Si on clique sur un cercle vide, on le remplit (et tous ceux avant)
       let newValue;
@@ -346,7 +347,7 @@ export class Rupture2069ActorSheet extends ActorSheet {
       } else {
         newValue = index + 1;
       }
-      
+
       this.actor.update({'system.nexus.value': newValue});
     });
 
@@ -357,30 +358,30 @@ export class Rupture2069ActorSheet extends ActorSheet {
       const element = $(ev.currentTarget);
       const itemId = element.data('item-id');
       const pointKey = element.data('point');
-      
+
       console.log('🔵 Clic sur point Nexus:', { itemId, pointKey });
-      
+
       const item = this.actor.items.get(itemId);
       if (!item) {
         console.error('❌ Item non trouvé:', itemId);
         return;
       }
-      
+
       // Vérifier que la structure existe
       if (!item.system[pointKey]) {
         console.error('❌ Structure invalide. Supprimez et recréez cet item:', item.name);
         ui.notifications.error(`${item.name} utilise l'ancienne structure. Supprimez-le et recréez-le.`);
         return;
       }
-      
+
       console.log('✅ Item trouvé:', item.name, item.system[pointKey]);
-      
+
       const currentUsed = item.system[pointKey].used;
-      
+
       await item.update({
         [`system.${pointKey}.used`]: !currentUsed
       });
-      
+
       console.log('✅ Mis à jour:', pointKey, 'used:', !currentUsed);
     });
 
@@ -388,10 +389,10 @@ export class Rupture2069ActorSheet extends ActorSheet {
     html.find('.cad-generateur-select').change(async (ev) => {
       const cadId = $(ev.currentTarget).data('cad-id');
       const generateurId = $(ev.currentTarget).val();
-      
+
       const cad = this.actor.items.get(cadId);
       if (!cad) return;
-      
+
       if (generateurId === '') {
         // Déconnexion
         await cad.update({
@@ -404,19 +405,19 @@ export class Rupture2069ActorSheet extends ActorSheet {
         // Connexion à un générateur
         const generateur = this.actor.items.get(generateurId);
         if (!generateur) return;
-        
+
         // Détecter le type du générateur
         let typeGenerateur = 'soma';
         if (generateur.system.nexus1.actif) typeGenerateur = generateur.system.nexus1.type;
         else if (generateur.system.nexus2.actif) typeGenerateur = generateur.system.nexus2.type;
         else if (generateur.system.nexus3.actif) typeGenerateur = generateur.system.nexus3.type;
-        
+
         await cad.update({
           'system.brancheAuGenerateur': true,
           'system.generateurId': generateurId,
           'system.typeGenerateur': typeGenerateur
         });
-        
+
         ui.notifications.info(`${cad.name} connecté à ${generateur.name} (${typeGenerateur}) !`);
       }
     });
@@ -425,22 +426,22 @@ export class Rupture2069ActorSheet extends ActorSheet {
     html.find('.sort-roll, .sort-roll-small').click(async (ev) => {
       ev.preventDefault();
       ev.stopPropagation();
-      
+
       const sortId = $(ev.currentTarget).data('sort-id');
       const cadId = $(ev.currentTarget).data('cad-id');
-      
+
       const cad = this.actor.items.get(cadId);
       if (!cad) {
         ui.notifications.error("CAD introuvable.");
         return;
       }
-      
+
       // Chercher le sort dans les sorts résolus du CAD
       let sort = null;
       if (cad.sortsResolus) {
         sort = cad.sortsResolus.find(s => s._id === sortId);
       }
-      
+
       // Si pas trouvé dans sortsResolus, essayer de le récupérer par UUID depuis le CAD
       if (!sort && cad.system.sorts) {
         for (let uuid of cad.system.sorts) {
@@ -451,13 +452,13 @@ export class Rupture2069ActorSheet extends ActorSheet {
           }
         }
       }
-      
+
       if (!sort) {
         ui.notifications.error("Sort introuvable.");
         console.error('Sort non trouvé, sortId:', sortId, 'CAD sorts:', cad.system.sorts);
         return;
       }
-      
+
       await this._lancerSort(sort, cad);
     });
 
@@ -469,7 +470,7 @@ export class Rupture2069ActorSheet extends ActorSheet {
       ev.preventDefault();
       const effectId = $(ev.currentTarget).closest('.effect-item').data('effect-id');
       const effect = this.actor.effects.get(effectId);
-      
+
       if (effect) {
         await effect.update({ disabled: !effect.disabled });
         ui.notifications.info(`Effet ${effect.disabled ? 'désactivé' : 'activé'}: ${effect.name}`);
@@ -480,7 +481,7 @@ export class Rupture2069ActorSheet extends ActorSheet {
       ev.preventDefault();
       const effectId = $(ev.currentTarget).closest('.effect-item').data('effect-id');
       const effect = this.actor.effects.get(effectId);
-      
+
       if (effect) {
         await effect.delete();
         ui.notifications.info(`Effet supprimé: ${effect.name}`);
@@ -504,7 +505,7 @@ export class Rupture2069ActorSheet extends ActorSheet {
     event.preventDefault();
     const header = event.currentTarget;
     const type = header.dataset.type;
-    
+
     const itemData = {
       name: `Nouveau ${type}`,
       type: type,
@@ -528,9 +529,6 @@ export class Rupture2069ActorSheet extends ActorSheet {
    * Jet de caractéristique
    */
   async _onCaracteristiqueRoll(caracteristique) {
-    // Difficulté par défaut : Moyenne
-    const difficulte = DIFFICULTE_DEFAUT;
-
     // Labels des caractéristiques
     const labels = {
       vigueur: 'Vigueur',
@@ -542,7 +540,7 @@ export class Rupture2069ActorSheet extends ActorSheet {
     };
 
     // Effectuer le jet
-    await this.actor.rollSkill(caracteristique, 0, difficulte, `Test de ${labels[caracteristique]}`);
+    await this.actor.rollSkill(caracteristique, 0, null, `Test de ${labels[caracteristique]}`);
   }
 
   /**
@@ -568,20 +566,20 @@ export class Rupture2069ActorSheet extends ActorSheet {
    */
   async _lancerSort(sort, cad) {
     console.log('🎯 Lancement du sort:', sort.name, 'depuis CAD:', cad.name);
-    
+
     const coutNexus = sort.system.coutNexus ?? 0;
     console.log('💰 Coût du sort:', coutNexus, 'point(s)');
-    
+
     // Déterminer le type de Nexus requis (celui du CAD)
     const typeRequis = cad.system.typeNexus;
-    
+
     if (!typeRequis) {
       ui.notifications.error("Le CAD n'a pas de type de Nexus défini !");
       return;
     }
-    
+
     console.log('🎨 Type de Nexus requis:', typeRequis);
-    
+
     // Étape 1 : Compter les points disponibles du CAD (tous du même type)
     let pointsCAD = [];
     for (let i = 1; i <= 2; i++) {
@@ -590,11 +588,11 @@ export class Rupture2069ActorSheet extends ActorSheet {
         pointsCAD.push({ key, type: typeRequis });
       }
     }
-    
+
     // Étape 2 : Si connecté à un générateur, compter ses points (du bon type uniquement)
     let pointsGenerateur = [];
     let generateur = null;
-    
+
     if (cad.system.brancheAuGenerateur && cad.system.generateurId) {
       generateur = this.actor.items.get(cad.system.generateurId);
       if (generateur) {
@@ -608,25 +606,25 @@ export class Rupture2069ActorSheet extends ActorSheet {
         }
       }
     }
-    
+
     const totalPoints = pointsCAD.length + pointsGenerateur.length;
     console.log(`📊 Points ${typeRequis} disponibles - CAD:`, pointsCAD.length, 'Générateur:', pointsGenerateur.length, 'Total:', totalPoints);
-    
+
     // Vérifier si on a assez de points du bon type
     if (totalPoints < coutNexus) {
       ui.notifications.error(`Pas assez de points de Nexus ${typeRequis} ! (${totalPoints}/${coutNexus} disponibles)`);
       return;
     }
-    
+
     // Étape 3 : Sélectionner les points à utiliser (CAD d'abord, puis générateur)
     let pointsAUtiliser = [];
     let sourceNom = '';
-    
+
     // Prendre d'abord les points du CAD
     for (let i = 0; i < Math.min(coutNexus, pointsCAD.length); i++) {
       pointsAUtiliser.push({ source: cad, ...pointsCAD[i] });
     }
-    
+
     // Si pas assez, prendre du générateur
     const manquant = coutNexus - pointsAUtiliser.length;
     if (manquant > 0 && generateur) {
@@ -634,11 +632,11 @@ export class Rupture2069ActorSheet extends ActorSheet {
         pointsAUtiliser.push({ source: generateur, ...pointsGenerateur[i] });
       }
     }
-    
+
     // Construire la description de la source
     const nbCAD = pointsAUtiliser.filter(p => p.source === cad).length;
     const nbGen = pointsAUtiliser.filter(p => p.source === generateur).length;
-    
+
     if (pointsAUtiliser.length === 0) {
       // Sort sans coût en Nexus
       sourceNom = cad.name;
@@ -649,10 +647,10 @@ export class Rupture2069ActorSheet extends ActorSheet {
     } else {
       sourceNom = generateur.name;
     }
-    
+
     console.log('✅ Utilisation:', sourceNom);
     console.log('🔋 Points sélectionnés:', pointsAUtiliser.map(p => `${p.source.name}.${p.key} (${p.type})`));
-    
+
     // Un CAD se lance avec la compétence Echo de son type
     const typeLabel = typeRequis === 'soma' ? 'Sôma' : typeRequis === 'psykhee' ? 'Psykhée' : 'Noüs';
     const competence = this._competenceEcho(typeRequis);
@@ -664,16 +662,18 @@ export class Rupture2069ActorSheet extends ActorSheet {
     const result = await this.actor.rollSkill(
       competence.system.caracteristique,
       competence.system.niveau || 0,
-      DIFFICULTE_DEFAUT,
+      null,
       `Sort: ${sort.name} (${competence.name})`
     );
 
-    // Échec : rien ne se passe, aucun point n'est consommé
-    if (!result.success) return;
-
+    // Le résultat donne l'effet ; s'il n'atteint rien, aucun point n'est consommé
     const total = result.total;
-    const palier = palierAtteint(total);
-    const effetTexte = (palier && sort.system.effets?.[palier.cle]) || "";
+    const issue = issueSort(sort, total);
+    if (issue.rate) {
+      ui.notifications.info(messageRate(sort, total, issue.minimum));
+      return;
+    }
+    const effetTexte = issue.texte;
 
     // Consommer les points
     for (let point of pointsAUtiliser) {
@@ -681,10 +681,10 @@ export class Rupture2069ActorSheet extends ActorSheet {
         [`system.${point.key}.used`]: true
       });
     }
-    
+
     // Créer le message de chat
     const bonus = preparerBonus(sort, this.actor, total);
-    
+
     const messageData = {
       speaker: ChatMessage.getSpeaker({ actor: this.actor }),
       flavor: `<strong>${sort.name}</strong> (Rang ${sort.system.rang})`,
@@ -709,17 +709,17 @@ export class Rupture2069ActorSheet extends ActorSheet {
       `,
       flags: bonus?.flags ?? {}
     };
-    
+
     const message = await ChatMessage.create(messageData);
     if (bonus) await appliquerBonus(message);
-    
+
     // Sort sans coût : aucun point à recharger
     if (pointsAUtiliser.length === 0) return;
 
     // Si le sort n'est pas maintenu, recharger immédiatement les points
     if (sort.system.maintien !== 'oui') {
       console.log('⚡ Sort instantané - Recharge automatique des points de Nexus');
-      
+
       // Attendre 500ms pour l'effet visuel
       setTimeout(async () => {
         for (let point of pointsAUtiliser) {
@@ -787,17 +787,17 @@ export class Rupture2069ActorSheet extends ActorSheet {
     const niveau = competence.system.niveau || 0;
     const caracteristique = competence.system.caracteristique;
 
-    // Effectuer le jet (difficulté fixe : Moyenne)
-    const result = await actor.rollSkill(caracteristique, niveau, DIFFICULTE_DEFAUT, `Sort: ${sort.name}`);
+    // Effectuer le jet
+    const result = await actor.rollSkill(caracteristique, niveau, null, `Sort: ${sort.name}`);
 
-    // Si réussite : consommer le Nexus et afficher les effets
-    if (result.success) {
+    // Le résultat donne l'effet ; s'il n'atteint rien, aucun Nexus n'est consommé
+    const total = result.total;
+    const issue = issueSort(sort, total);
+    if (issue.rate) {
+      ui.notifications.info(messageRate(sort, total, issue.minimum));
+    } else {
       await actor.update({ 'system.nexus.value': actor.system.nexus.value - coutNexus });
-
-      // Déterminer l'effet selon la marge du jet
-      const total = result.total;
-      const palier = palierAtteint(total);
-      const effetTexte = (palier && systemData.effets?.[palier.cle]) || "";
+      const effetTexte = issue.texte;
 
       const bonus = preparerBonus(sort, actor, total);
 
