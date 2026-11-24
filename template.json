@@ -30,27 +30,45 @@
       "caracteristiques": {
         "vigueur": {
           "value": 50,
-          "bonus": 0
+          "bonus": 0,
+          "bonusMod": 0,
+          "bonusSort": 0,
+          "modSort": 0
         },
         "coordination": {
           "value": 50,
-          "bonus": 0
+          "bonus": 0,
+          "bonusMod": 0,
+          "bonusSort": 0,
+          "modSort": 0
         },
         "logique": {
           "value": 50,
-          "bonus": 0
+          "bonus": 0,
+          "bonusMod": 0,
+          "bonusSort": 0,
+          "modSort": 0
         },
         "instinct": {
           "value": 50,
-          "bonus": 0
+          "bonus": 0,
+          "bonusMod": 0,
+          "bonusSort": 0,
+          "modSort": 0
         },
         "empathie": {
           "value": 50,
-          "bonus": 0
+          "bonus": 0,
+          "bonusMod": 0,
+          "bonusSort": 0,
+          "modSort": 0
         },
         "pouvoir": {
           "value": 50,
-          "bonus": 0
+          "bonus": 0,
+          "bonusMod": 0,
+          "bonusSort": 0,
+          "modSort": 0
         }
       },
       "race": "",
@@ -73,29 +91,53 @@
       "templates": ["base"],
       "caracteristiques": {
         "vigueur": {
-          "value": 50
+          "value": 50,
+          "bonus": 0,
+          "bonusMod": 0,
+          "bonusSort": 0,
+          "modSort": 0
         },
         "coordination": {
-          "value": 50
+          "value": 50,
+          "bonus": 0,
+          "bonusMod": 0,
+          "bonusSort": 0,
+          "modSort": 0
         },
         "logique": {
-          "value": 50
+          "value": 50,
+          "bonus": 0,
+          "bonusMod": 0,
+          "bonusSort": 0,
+          "modSort": 0
         },
         "instinct": {
-          "value": 50
+          "value": 50,
+          "bonus": 0,
+          "bonusMod": 0,
+          "bonusSort": 0,
+          "modSort": 0
         },
         "empathie": {
-          "value": 50
+          "value": 50,
+          "bonus": 0,
+          "bonusMod": 0,
+          "bonusSort": 0,
+          "modSort": 0
         },
         "pouvoir": {
-          "value": 50
+          "value": 50,
+          "bonus": 0,
+          "bonusMod": 0,
+          "bonusSort": 0,
+          "modSort": 0
         }
       },
       "type": "ordinaire"
     }
   },
   "Item": {
-    "types": ["competence", "arme", "armure", "bouclier", "equipement", "sort", "talent", "avantage", "desavantage"],
+    "types": ["competence", "arme", "armure", "bouclier", "equipement", "sort", "talent", "avantage", "desavantage", "cad", "generateur"],
     "templates": {
       "base": {
         "description": ""
@@ -171,7 +213,7 @@
       "source": "",
       "rang": 1,
       "action": 1,
-      "coutNexus": 1,
+      "coutNexus": 0,
       "maintien": "non",
       "effets": {
         "routine": "",
@@ -185,7 +227,9 @@
         "surhumaine": "",
         "divine": ""
       },
-      "competenceUtilisee": "canalisation"
+      "competenceUtilisee": "canalisation",
+      "bonus": [],
+      "dureeBonus": 0
     },
     "cad": {
       "templates": ["base"],

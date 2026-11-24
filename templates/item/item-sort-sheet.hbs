@@ -58,57 +58,85 @@
       <textarea name="system.description" rows="4">{{system.description}}</textarea>
     </div>
 
+    <h3>Bonus donnés par le sort</h3>
+    <p class="notes">Caractéristique : compte partout (jets, santé, Nexus, dégâts). Modificateur : compte seulement dans les jets. Une valeur négative donne un malus. Les cibles sont les jetons visés, sinon le lanceur.</p>
+
+    <div class="bonus-lignes">
+      {{#each bonusSort as |ligne index|}}
+      <div class="bonus-ligne" data-index="{{index}}">
+        <select name="system.bonus.{{index}}.type">
+          {{#each @root.optionsBonus.types as |o|}}<option value="{{o.cle}}" {{#if (eq o.cle ligne.type)}}selected{{/if}}>{{o.nom}}</option>{{/each}}
+        </select>
+        <select name="system.bonus.{{index}}.carac">
+          {{#each @root.optionsBonus.caracs as |o|}}<option value="{{o.cle}}" {{#if (eq o.cle ligne.carac)}}selected{{/if}}>{{o.nom}}</option>{{/each}}
+        </select>
+        <input type="number" name="system.bonus.{{index}}.valeur" value="{{ligne.valeur}}" data-dtype="Number" title="Valeur du bonus (négative : malus)"/>
+        <select name="system.bonus.{{index}}.palier" title="À partir de cette difficulté atteinte au jet">
+          {{#each @root.optionsBonus.paliers as |o|}}<option value="{{o.cle}}" {{#if (eq o.cle ligne.palier)}}selected{{/if}}>{{o.nom}}</option>{{/each}}
+        </select>
+        <a class="bonus-supprimer" title="Supprimer ce bonus"><i class="fas fa-trash"></i></a>
+      </div>
+      {{/each}}
+      <a class="bonus-ajouter"><i class="fas fa-plus"></i> Ajouter un bonus</a>
+    </div>
+
+    <div class="form-group">
+      <label>Durée du bonus (tours)</label>
+      <input type="number" name="system.dureeBonus" value="{{system.dureeBonus}}" data-dtype="Number" min="0"/>
+      <p class="notes">0 : jusqu'à ce qu'on l'enlève</p>
+    </div>
+
     <h3>Effets selon le jet</h3>
     <p class="notes">Les dégâts/effets dépendent de la difficulté atteinte lors du jet</p>
 
     <div class="effets-grid">
       <div class="form-group">
-        <label>20 - Routine</label>
+        <label>6 - Routine</label>
         <input type="text" name="system.effets.routine" value="{{system.effets.routine}}" placeholder="Ex: Fatigue 6"/>
       </div>
 
       <div class="form-group">
-        <label>40 - Facile</label>
+        <label>13 - Facile</label>
         <input type="text" name="system.effets.facile" value="{{system.effets.facile}}" placeholder="Ex: Fatigue 4"/>
       </div>
 
       <div class="form-group">
-        <label>80 - Moyenne</label>
+        <label>26 - Moyenne</label>
         <input type="text" name="system.effets.moyenne" value="{{system.effets.moyenne}}" placeholder="Ex: Fatigue 2"/>
       </div>
 
       <div class="form-group">
-        <label>120 - Difficile</label>
+        <label>40 - Difficile</label>
         <input type="text" name="system.effets.difficile" value="{{system.effets.difficile}}" placeholder="Ex: Dégât de base 100"/>
       </div>
 
       <div class="form-group">
-        <label>140 - Très Difficile</label>
+        <label>46 - Très Difficile</label>
         <input type="text" name="system.effets.tresDifficile" value="{{system.effets.tresDifficile}}" placeholder="Ex: Dégât de base 120"/>
       </div>
 
       <div class="form-group">
-        <label>180 - Elite</label>
+        <label>60 - Elite</label>
         <input type="text" name="system.effets.elite" value="{{system.effets.elite}}" placeholder="Ex: Dégât de base 140"/>
       </div>
 
       <div class="form-group">
-        <label>240 - Exceptionnelle</label>
+        <label>80 - Exceptionnelle</label>
         <input type="text" name="system.effets.exceptionnelle" value="{{system.effets.exceptionnelle}}" placeholder="Ex: Dégât de base 160"/>
       </div>
 
       <div class="form-group">
-        <label>280 - Absurde</label>
+        <label>93 - Absurde</label>
         <input type="text" name="system.effets.absurde" value="{{system.effets.absurde}}" placeholder="Ex: Dégât de base 180"/>
       </div>
 
       <div class="form-group">
-        <label>320 - Surhumaine</label>
+        <label>106 - Surhumaine</label>
         <input type="text" name="system.effets.surhumaine" value="{{system.effets.surhumaine}}" placeholder="Ex: Dégât de base 200"/>
       </div>
 
       <div class="form-group">
-        <label>440 - Divine</label>
+        <label>146 - Divine</label>
         <input type="text" name="system.effets.divine" value="{{system.effets.divine}}" placeholder="Ex: Dégât de base 220"/>
       </div>
     </div>

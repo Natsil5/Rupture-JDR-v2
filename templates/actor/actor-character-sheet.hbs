@@ -169,8 +169,18 @@
             <input type="text" name="system.caracteristiques.{{carac.key}}.bonus" value="{{carac.bonus}}" data-dtype="Number" placeholder="0"/>
           </div>
           <div class="carac-total">
-            <strong>Total: {{add carac.value carac.bonus}}</strong>
+            <strong>Total: {{carac.total}}</strong>
           </div>
+          <div class="carac-bonus">
+            <label>Bonus modif.:</label>
+            <input type="text" name="system.caracteristiques.{{carac.key}}.bonusMod" value="{{carac.bonusMod}}" data-dtype="Number" placeholder="0"/>
+          </div>
+          <div class="carac-mod" title="Total ÷ 3, arrondi en dessous, plus les bonus de modificateur : ajouté aux jets">
+            Modificateur: <strong>{{carac.modificateur}}</strong>
+          </div>
+          {{#if carac.sorts}}
+          <div class="carac-sorts" title="Bonus donnés par les sorts actifs, déjà comptés">Sorts: {{carac.sorts}}</div>
+          {{/if}}
           <button class="caracteristique-roll" data-caracteristique="{{carac.key}}" type="button">
             <i class="fas fa-dice-d20"></i> Jet
           </button>
@@ -690,42 +700,34 @@
     <div class="tab effets" data-group="primary" data-tab="effets">
       <h2>Effets actifs</h2>
       
-      {{#if actor.effects.size}}
+      {{#if effetsActifs.length}}
       <ol class="items-list">
-        {{#each actor.effects as |effet id|}}
-        <li class="item effect-item flexrow" data-effect-id="{{effet.id}}">
+        {{#each effetsActifs as |effet|}}
+        <li class="item effect-item flexrow{{#if effet.disabled}} disabled{{/if}}" data-effect-id="{{effet.id}}">
           <div class="item-image">
-            <img src="{{effet.icon}}" title="{{effet.name}}" width="36" height="36"/>
+            <img src="{{effet.img}}" title="{{effet.name}}" width="36" height="36"/>
           </div>
           <div class="item-name">
             <h4>{{effet.name}}</h4>
-            {{#if effet.duration.rounds}}
-            <span class="effect-duration">⏱️ {{effet.duration.rounds}} rounds restants</span>
+            {{#if effet.termine}}
+            <span class="effect-duration">Terminé</span>
+            {{else if effet.duree}}
+            <span class="effect-duration">⏱️ {{effet.duree}}</span>
             {{else}}
-            <span class="effect-duration">∞ Permanent</span>
+            <span class="effect-duration">∞ Jusqu'à ce qu'on l'enlève</span>
             {{/if}}
           </div>
           <div class="item-details" style="flex: 3;">
-            {{#if effet.changes.length}}
+            {{#if effet.lignes.length}}
             <div class="effect-changes">
-              {{#each effet.changes as |change|}}
-              <div class="effect-change">
-                <span class="change-key">{{change.key}}</span>: 
-                <span class="change-value">
-                  {{#if (eq change.mode 1)}}×{{/if}}
-                  {{#if (eq change.mode 2)}}+{{/if}}
-                  {{#if (eq change.mode 3)}}↓{{/if}}
-                  {{#if (eq change.mode 4)}}↑{{/if}}
-                  {{#if (eq change.mode 5)}}={{/if}}
-                  {{change.value}}
-                </span>
-              </div>
+              {{#each effet.lignes as |ligne|}}
+              <div class="effect-change"><span class="change-value">{{ligne}}</span></div>
               {{/each}}
             </div>
             {{/if}}
-            {{#if effet.origin}}
+            {{#if effet.source}}
             <div class="effect-source">
-              <small>Source: {{effet.sourceName}}</small>
+              <small>Source: {{effet.source}}</small>
             </div>
             {{/if}}
           </div>

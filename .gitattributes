@@ -1,0 +1,2 @@
+# Bases LevelDB : ne jamais convertir les fins de ligne
+packs/** -text

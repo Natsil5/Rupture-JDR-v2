@@ -83,19 +83,19 @@
       "PV": "Points de Vie"
     },
     "Difficultes": {
-      "Routine": "Routine (20)",
-      "Facile": "Facile (40)",
-      "Moyenne": "Moyenne (80)",
-      "Difficile": "Difficile (120)",
-      "TresDifficile": "Très Difficile (140)",
-      "Elite": "Elite (180)",
-      "Exceptionnelle": "Exceptionnelle (240)",
-      "Absurde": "Absurde (280)",
-      "Surhumaine": "Surhumaine (320)",
-      "Divine": "Divine (440)"
+      "Routine": "Routine (6)",
+      "Facile": "Facile (13)",
+      "Moyenne": "Moyenne (26)",
+      "Difficile": "Difficile (40)",
+      "TresDifficile": "Très Difficile (46)",
+      "Elite": "Elite (60)",
+      "Exceptionnelle": "Exceptionnelle (80)",
+      "Absurde": "Absurde (93)",
+      "Surhumaine": "Surhumaine (106)",
+      "Divine": "Divine (146)"
     },
     "Roll": {
-      "Formula": "3d6×5 + Carac + Comp",
+      "Formula": "3d10 + Carac ÷ 3 + Comp",
       "RollCheck": "Jet de {competence}",
       "RollInitiative": "Jet d'Initiative",
       "Difficulte": "Difficulté",

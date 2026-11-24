@@ -1,3 +1,6 @@
+import { DIFFICULTE_DEFAUT, estEcho, modificateurCarac, nomSimple, palierAtteint, signe, totalCarac } from "../regles.mjs";
+import { appliquerBonus, changementsEffet, libelleBonus, preparerBonus } from "../bonus.mjs";
+
 /**
  * Feuille de personnage pour Rupture 2069
  */
@@ -46,6 +49,9 @@ export class Rupture2069ActorSheet extends ActorSheet {
 
     // Préparer les caractéristiques pour l'affichage
     this._prepareCaracteristiques(context);
+
+    // Préparer les effets actifs pour l'affichage
+    this._prepareEffets(context);
 
     return context;
   }
@@ -183,6 +189,61 @@ export class Rupture2069ActorSheet extends ActorSheet {
       { key: 'empathie', label: 'EMP', ...caracteristiques.empathie },
       { key: 'pouvoir', label: 'POU', ...caracteristiques.pouvoir }
     ];
+
+    // Total, modificateur utilisé dans les jets et part venant des sorts
+    for (const carac of context.caracteristiquesArray) {
+      const bonusSort = Number(carac.bonusSort) || 0;
+      const modSort = Number(carac.modSort) || 0;
+      carac.total = totalCarac(carac);
+      carac.modificateur = modificateurCarac(carac);
+      carac.sorts = [
+        bonusSort ? `carac. ${signe(bonusSort)}` : "",
+        modSort ? `modif. ${signe(modSort)}` : ""
+      ].filter(Boolean).join(", ");
+    }
+  }
+
+  /**
+   * Prépare l'affichage des effets actifs
+   */
+  _prepareEffets(context) {
+    const SIGNES = { 1: "×", 2: "+", 3: "↓", 4: "↑", 5: "=", multiply: "×", add: "+", downgrade: "↓", upgrade: "↑", override: "=" };
+    context.effetsActifs = this.actor.effects.map(effet => ({
+      id: effet.id,
+      name: effet.name,
+      img: effet.img,
+      disabled: effet.disabled,
+      termine: !!effet.duration?.expired,
+      duree: this._dureeEffet(effet),
+      source: this._nomSource(effet.origin),
+      lignes: changementsEffet(effet).map(c =>
+        libelleBonus(c.key, c.value) ?? `${c.key}: ${SIGNES[c.type ?? c.mode] ?? ""}${c.value}`)
+    }));
+  }
+
+  /**
+   * Durée d'un effet : tours restants en combat, sinon durée prévue
+   */
+  _dureeEffet(effet) {
+    const reste = effet.duration?.remaining;
+    if (Number.isFinite(reste)) {
+      const unite = ["rounds", "turns"].includes(effet.duration.units ?? "rounds") ? "tour(s)" : effet.duration.units;
+      return `${Math.max(0, Math.ceil(reste))} ${unite}`;
+    }
+    const prevue = effet.flags?.rupture2069?.duree;
+    return prevue ? `${prevue} tour(s), lancé hors combat` : "";
+  }
+
+  /**
+   * Nom du sort ou de l'objet d'où vient un effet
+   */
+  _nomSource(uuid) {
+    if (!uuid) return "";
+    try {
+      return fromUuidSync(uuid)?.name ?? "";
+    } catch (error) {
+      return "";
+    }
   }
 
   /** @override */
@@ -462,8 +523,8 @@ export class Rupture2069ActorSheet extends ActorSheet {
    * Jet de caractéristique
    */
   async _onCaracteristiqueRoll(caracteristique) {
-    // Difficulté par défaut : Moyenne (80)
-    const difficulte = 80;
+    // Difficulté par défaut : Moyenne
+    const difficulte = DIFFICULTE_DEFAUT;
 
     // Labels des caractéristiques
     const labels = {
@@ -503,7 +564,7 @@ export class Rupture2069ActorSheet extends ActorSheet {
   async _lancerSort(sort, cad) {
     console.log('🎯 Lancement du sort:', sort.name, 'depuis CAD:', cad.name);
     
-    const coutNexus = sort.system.coutNexus || 1;
+    const coutNexus = sort.system.coutNexus ?? 0;
     console.log('💰 Coût du sort:', coutNexus, 'point(s)');
     
     // Déterminer le type de Nexus requis (celui du CAD)
@@ -573,7 +634,10 @@ export class Rupture2069ActorSheet extends ActorSheet {
     const nbCAD = pointsAUtiliser.filter(p => p.source === cad).length;
     const nbGen = pointsAUtiliser.filter(p => p.source === generateur).length;
     
-    if (nbCAD > 0 && nbGen > 0) {
+    if (pointsAUtiliser.length === 0) {
+      // Sort sans coût en Nexus
+      sourceNom = cad.name;
+    } else if (nbCAD > 0 && nbGen > 0) {
       sourceNom = `${cad.name} (${nbCAD}) + ${generateur.name} (${nbGen})`;
     } else if (nbCAD > 0) {
       sourceNom = cad.name;
@@ -584,6 +648,28 @@ export class Rupture2069ActorSheet extends ActorSheet {
     console.log('✅ Utilisation:', sourceNom);
     console.log('🔋 Points sélectionnés:', pointsAUtiliser.map(p => `${p.source.name}.${p.key} (${p.type})`));
     
+    // Un CAD se lance avec la compétence Echo de son type
+    const typeLabel = typeRequis === 'soma' ? 'Sôma' : typeRequis === 'psykhee' ? 'Psykhée' : 'Noüs';
+    const competence = this._competenceEcho(typeRequis);
+    if (!competence) {
+      ui.notifications.warn(`La compétence "Echo (${typeLabel})" n'a pas été trouvée sur ce personnage.`);
+      return;
+    }
+
+    const result = await this.actor.rollSkill(
+      competence.system.caracteristique,
+      competence.system.niveau || 0,
+      DIFFICULTE_DEFAUT,
+      `Sort: ${sort.name} (${competence.name})`
+    );
+
+    // Échec : rien ne se passe, aucun point n'est consommé
+    if (!result.success) return;
+
+    const total = result.total;
+    const palier = palierAtteint(total);
+    const effetTexte = (palier && sort.system.effets?.[palier.cle]) || "";
+
     // Consommer les points
     for (let point of pointsAUtiliser) {
       await point.source.update({
@@ -592,7 +678,7 @@ export class Rupture2069ActorSheet extends ActorSheet {
     }
     
     // Créer le message de chat
-    const typeLabel = typeRequis === 'soma' ? 'Sôma' : typeRequis === 'psykhee' ? 'Psykhée' : 'Noüs';
+    const bonus = preparerBonus(sort, this.actor, total);
     
     const messageData = {
       speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -608,14 +694,23 @@ export class Rupture2069ActorSheet extends ActorSheet {
             <p><strong>Coût:</strong> ${coutNexus} ${typeLabel}</p>
             <p><strong>Action:</strong> ${sort.system.action}</p>
             <p><strong>Maintien:</strong> ${sort.system.maintien === 'oui' ? 'Oui ⏳' : 'Non ⚡'}</p>
+            <hr/>
+            <p><strong>Résultat du jet:</strong> ${total}</p>
+            ${effetTexte ? `<p class="effet-sort"><strong>Effet:</strong> ${effetTexte}</p>` : ''}
             ${sort.system.description ? `<hr/><p>${sort.system.description}</p>` : ''}
+            ${bonus?.html ?? ''}
           </div>
         </div>
-      `
+      `,
+      flags: bonus?.flags ?? {}
     };
     
-    await ChatMessage.create(messageData);
+    const message = await ChatMessage.create(messageData);
+    if (bonus) await appliquerBonus(message);
     
+    // Sort sans coût : aucun point à recharger
+    if (pointsAUtiliser.length === 0) return;
+
     // Si le sort n'est pas maintenu, recharger immédiatement les points
     if (sort.system.maintien !== 'oui') {
       console.log('⚡ Sort instantané - Recharge automatique des points de Nexus');
@@ -636,12 +731,29 @@ export class Rupture2069ActorSheet extends ActorSheet {
   }
 
   /**
+   * Compétence Echo du personnage pour un type de Nexus (soma, psykhee ou nous), accents ignorés
+   */
+  _competenceEcho(type) {
+    return this.actor.items.find(i => {
+      if (i.type !== 'competence') return false;
+      const nom = i.system.specialisation ? `${i.name} (${i.system.specialisation})` : i.name;
+      return nomSimple(nom) === `echo (${type})` || nomSimple(i.name) === `echo (${type})`;
+    });
+  }
+
+  /**
    * Lance un sort depuis l'onglet Magie avec jet de dés + gestion du Nexus
    */
   async _lancerSortDepuisMagie(sort) {
     const systemData = sort.system;
     const actor = this.actor;
-    const coutNexus = systemData.coutNexus || 1;
+    const coutNexus = systemData.coutNexus ?? 0;
+
+    // Un sort réglé sur Echo utilise la jauge d'un CAD, pas celle du personnage
+    if (estEcho(systemData.competenceUtilisee)) {
+      ui.notifications.warn(`${sort.name} se lance avec un CAD (compétence Echo).`);
+      return;
+    }
 
     // Vérifier le Nexus disponible
     if (actor.system.nexus.value < coutNexus) {
@@ -670,28 +782,21 @@ export class Rupture2069ActorSheet extends ActorSheet {
     const niveau = competence.system.niveau || 0;
     const caracteristique = competence.system.caracteristique;
 
-    // Effectuer le jet (difficulté fixe 80 — Moyenne)
-    const result = await actor.rollSkill(caracteristique, niveau, 80, `Sort: ${sort.name}`);
+    // Effectuer le jet (difficulté fixe : Moyenne)
+    const result = await actor.rollSkill(caracteristique, niveau, DIFFICULTE_DEFAUT, `Sort: ${sort.name}`);
 
     // Si réussite : consommer le Nexus et afficher les effets
     if (result.success) {
       await actor.update({ 'system.nexus.value': actor.system.nexus.value - coutNexus });
 
       // Déterminer l'effet selon la marge du jet
-      let effetTexte = "";
       const total = result.total;
-      if (total >= 440)      effetTexte = systemData.effets?.divine        || "";
-      else if (total >= 320) effetTexte = systemData.effets?.surhumaine    || "";
-      else if (total >= 280) effetTexte = systemData.effets?.absurde       || "";
-      else if (total >= 240) effetTexte = systemData.effets?.exceptionnelle || "";
-      else if (total >= 180) effetTexte = systemData.effets?.elite         || "";
-      else if (total >= 140) effetTexte = systemData.effets?.tresDifficile || "";
-      else if (total >= 120) effetTexte = systemData.effets?.difficile     || "";
-      else if (total >= 80)  effetTexte = systemData.effets?.moyenne       || "";
-      else if (total >= 40)  effetTexte = systemData.effets?.facile        || "";
-      else if (total >= 20)  effetTexte = systemData.effets?.routine       || "";
+      const palier = palierAtteint(total);
+      const effetTexte = (palier && systemData.effets?.[palier.cle]) || "";
 
-      await ChatMessage.create({
+      const bonus = preparerBonus(sort, actor, total);
+
+      const message = await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor }),
         content: `
           <div class="rupture2069-spell">
@@ -702,12 +807,17 @@ export class Rupture2069ActorSheet extends ActorSheet {
             <hr style="border-color:rgba(255,255,255,0.3);margin:5px 0">
             <div><strong>Résultat du jet:</strong> ${total}</div>
             ${effetTexte ? `<div class="effet-sort"><strong>Effet:</strong> ${effetTexte}</div>` : ''}
+            ${bonus?.html ?? ''}
             ${systemData.description ? `<hr style="border-color:rgba(255,255,255,0.3);margin:5px 0"><div style="font-style:italic">${systemData.description}</div>` : ''}
           </div>
-        `
+        `,
+        flags: bonus?.flags ?? {}
       });
+      if (bonus) await appliquerBonus(message);
 
-      if (systemData.maintien !== 'oui') {
+      if (coutNexus <= 0) {
+        // Sort sans coût en Nexus : rien à signaler
+      } else if (systemData.maintien !== 'oui') {
         ui.notifications.info(`${coutNexus} point(s) de Nexus consommé(s)`);
       } else {
         ui.notifications.warn(`${coutNexus} point(s) de Nexus consommé(s) (sort maintenu). Rechargez manuellement.`);

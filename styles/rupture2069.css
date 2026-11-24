@@ -469,6 +469,17 @@
   font-size: 1.1em;
 }
 
+.rupture2069 .caracteristique .carac-mod {
+  color: #2c3e50;
+  font-size: 0.95em;
+}
+
+.rupture2069 .caracteristique .carac-sorts {
+  color: #8e44ad;
+  font-size: 0.85em;
+  font-weight: bold;
+}
+
 .rupture2069 .caracteristique button {
   margin-top: 5px;
   background: #1abc9c;
@@ -763,6 +774,47 @@
   font-size: 0.9em;
   color: #2c3e50;
   font-weight: bold;
+}
+
+/* Bonus donnés par un sort : fiche du sort */
+.rupture2069 .bonus-lignes {
+  margin-bottom: 10px;
+}
+
+.rupture2069 .bonus-ligne {
+  display: grid;
+  grid-template-columns: 1.3fr 1.2fr 70px 1.5fr 24px;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.rupture2069 .bonus-ligne input,
+.rupture2069 .bonus-ligne select {
+  width: 100%;
+  min-width: 0;
+}
+
+.rupture2069 .bonus-ajouter,
+.rupture2069 .bonus-supprimer {
+  cursor: pointer;
+}
+
+/* Bonus donnés par un sort : message de chat */
+.rupture2069-bonus {
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px solid rgba(128, 128, 128, 0.4);
+}
+
+.rupture2069-bonus .bonus-boutons {
+  display: flex;
+  gap: 6px;
+  margin-top: 5px;
+}
+
+.rupture2069-bonus .bonus-boutons button {
+  flex: 1;
 }
 
 .rupture2069 .effet-sort {

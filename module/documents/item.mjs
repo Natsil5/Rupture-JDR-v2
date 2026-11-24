@@ -1,3 +1,6 @@
+import { DIFFICULTE_DEFAUT, estEcho, palierAtteint, totalCarac } from "../regles.mjs";
+import { appliquerBonus, preparerBonus } from "../bonus.mjs";
+
 /**
  * Classe Item étendue pour Rupture 2069
  */
@@ -104,8 +107,8 @@ export class Rupture2069Item extends Item {
     const systemData = this.system;
     const actor = this.actor;
 
-    // Difficulté par défaut : Moyenne (80)
-    const difficulte = 80;
+    // Difficulté par défaut : Moyenne
+    const difficulte = DIFFICULTE_DEFAUT;
 
     // Effectuer le jet
     return await actor.rollSkill(
@@ -146,8 +149,8 @@ export class Rupture2069Item extends Item {
     const niveau = competence.system.niveau || 0;
     const caracteristique = competence.system.caracteristique;
 
-    // Difficulté par défaut : Moyenne (80)
-    const difficulte = 80;
+    // Difficulté par défaut : Moyenne
+    const difficulte = DIFFICULTE_DEFAUT;
 
     // Effectuer le jet d'attaque
     const result = await actor.rollSkill(caracteristique, niveau, difficulte, `Attaque: ${this.name}`);
@@ -159,8 +162,7 @@ export class Rupture2069Item extends Item {
       
       // Ajouter la Vigueur si l'arme l'utilise
       if (systemData.ajouteVigueur) {
-        const vigueur = actor.system.caracteristiques.vigueur.value + 
-                       (actor.system.caracteristiques.vigueur.bonus || 0);
+        const vigueur = totalCarac(actor.system.caracteristiques.vigueur);
         degatsBase += vigueur;
       }
 
@@ -187,6 +189,12 @@ export class Rupture2069Item extends Item {
   async _rollSort() {
     const systemData = this.system;
     const actor = this.actor;
+
+    // Un sort réglé sur Echo utilise la jauge d'un CAD, pas celle du personnage
+    if (estEcho(systemData.competenceUtilisee)) {
+      ui.notifications.warn(`${this.name} se lance avec un CAD (compétence Echo).`);
+      return;
+    }
 
     // Vérifier si le personnage a assez de Nexus
     if (actor.system.nexus.value < systemData.coutNexus) {
@@ -217,8 +225,8 @@ export class Rupture2069Item extends Item {
     const niveau = competence.system.niveau || 0;
     const caracteristique = competence.system.caracteristique;
 
-    // Lancer directement avec difficulté 80 (Moyenne)
-    const difficulte = 80;
+    // Lancer directement avec la difficulté par défaut (Moyenne)
+    const difficulte = DIFFICULTE_DEFAUT;
 
     // Effectuer le jet de magie
     const result = await actor.rollSkill(caracteristique, niveau, difficulte, `Sort: ${this.name}`);
@@ -230,19 +238,11 @@ export class Rupture2069Item extends Item {
       });
 
       // Déterminer l'effet selon le résultat du jet
-      let effetTexte = "";
       const total = result.total;
-      
-      if (total >= 440) effetTexte = systemData.effets.divine || "Effet divin";
-      else if (total >= 320) effetTexte = systemData.effets.surhumaine || "Effet surhumain";
-      else if (total >= 280) effetTexte = systemData.effets.absurde || "Effet absurde";
-      else if (total >= 240) effetTexte = systemData.effets.exceptionnelle || "Effet exceptionnel";
-      else if (total >= 180) effetTexte = systemData.effets.elite || "Effet elite";
-      else if (total >= 140) effetTexte = systemData.effets.tresDifficile || "Effet très difficile";
-      else if (total >= 120) effetTexte = systemData.effets.difficile || "Effet difficile";
-      else if (total >= 80) effetTexte = systemData.effets.moyenne || "Effet moyen";
-      else if (total >= 40) effetTexte = systemData.effets.facile || "Effet facile";
-      else if (total >= 20) effetTexte = systemData.effets.routine || "Effet routinier";
+      const palier = palierAtteint(total);
+      const effetTexte = palier ? (systemData.effets[palier.cle] || palier.effet) : "";
+
+      const bonus = preparerBonus(this, actor, total);
 
       const effetMessage = `
         <div class="rupture2069-spell">
@@ -253,15 +253,18 @@ export class Rupture2069Item extends Item {
           <hr style="border-color: rgba(255,255,255,0.3); margin: 5px 0;">
           <div><strong>Résultat du jet:</strong> ${total}</div>
           <div class="effet-sort"><strong>Effet:</strong> ${effetTexte}</div>
+          ${bonus?.html ?? ""}
           <hr style="border-color: rgba(255,255,255,0.3); margin: 5px 0;">
           <div class="description" style="font-style: italic; margin-top: 5px;">${systemData.description}</div>
         </div>
       `;
 
-      ChatMessage.create({
+      const message = await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        content: effetMessage
+        content: effetMessage,
+        flags: bonus?.flags ?? {}
       });
+      if (bonus) await appliquerBonus(message);
     }
 
     return result;

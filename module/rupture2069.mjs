@@ -1,6 +1,6 @@
 /**
  * Rupture 2069 - Système de jeu pour Foundry VTT
- * Version 2.0 avec Initiative, Nexus en cercles, et pré-remplissage des compétences
+ * Version 2.2 : règle 3D10 (voir regles.mjs), bonus donnés par les sorts (voir bonus.mjs), Initiative, Nexus en cercles, et pré-remplissage des compétences
  */
 
 import { Rupture2069Actor } from "./documents/actor.mjs";
@@ -8,13 +8,15 @@ import { Rupture2069Item } from "./documents/item.mjs";
 import { Rupture2069Combat } from "./documents/combat.mjs";
 import { Rupture2069ActorSheet } from "./sheets/actor-sheet.mjs";
 import { Rupture2069ItemSheet } from "./sheets/item-sheet.mjs";
+import { DES, DIFFICULTE_DEFAUT, detailModificateur, modificateurCarac } from "./regles.mjs";
+import { activerBoutons } from "./bonus.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
 /* -------------------------------------------- */
 
 Hooks.once('init', async function() {
-  console.log('Rupture 2069 | Initialisation du système v2.0');
+  console.log('Rupture 2069 | Initialisation du système v2.2.2');
 
   // Ajouter namespace global
   game.rupture2069 = {
@@ -102,27 +104,27 @@ function registerHandlebarsHelpers() {
 
 /**
  * Effectue un jet de compétence dans le système Rupture 2069
- * Formule: 3d6×5 + Caractéristique + Compétence vs Difficulté
+ * Formule: 3d10 + Caractéristique ÷ 3 + Compétence vs Difficulté
  */
 export async function rollSkillCheck({
   actor,
   caracteristique,
   competence = 0,
-  difficulte = 80,
+  difficulte = DIFFICULTE_DEFAUT,
   label = "Test"
 } = {}) {
   
-  // Récupérer la valeur de la caractéristique
-  const caracValue = actor.system.caracteristiques[caracteristique]?.value || 0;
-  const caracBonus = actor.system.caracteristiques[caracteristique]?.bonus || 0;
-  const totalCarac = caracValue + caracBonus;
+  // Récupérer la caractéristique et son modificateur (bonus compris)
+  const carac = actor.system.caracteristiques[caracteristique];
+  const modCarac = modificateurCarac(carac);
+  competence = Number(competence) || 0;
 
-  // Formule du jet: 3d6×5
-  const roll = await new Roll("(3d6) * 5").evaluate();
+  // Formule du jet: 3d10
+  const roll = await new Roll(DES).evaluate();
   const rollTotal = roll.total;
 
   // Calculer le résultat total
-  const total = rollTotal + totalCarac + competence;
+  const total = rollTotal + modCarac + competence;
   const success = total >= difficulte;
   const margin = total - difficulte;
 
@@ -142,12 +144,12 @@ export async function rollSkillCheck({
       </div>
       <div class="roll-details">
         <div class="roll-line">
-          <span class="roll-label">Jet (3d6×5):</span>
+          <span class="roll-label">Jet (${DES}):</span>
           <span class="roll-value">${rollTotal}</span>
         </div>
         <div class="roll-line">
-          <span class="roll-label">Caractéristique:</span>
-          <span class="roll-value">${totalCarac}</span>
+          <span class="roll-label">Caractéristique (${detailModificateur(carac)}):</span>
+          <span class="roll-value">${modCarac}</span>
         </div>
         <div class="roll-line">
           <span class="roll-label">Compétence:</span>
@@ -163,7 +165,7 @@ export async function rollSkillCheck({
         </div>
         <div class="roll-result ${success ? 'success' : 'failure'}">
           ${success ? '✓ Réussite' : '✗ Échec'}
-          ${success ? ` (Marge: +${margin})` : ` (Marge: ${margin})`}
+          ${success ? ` (Écart: +${margin})` : ` (Écart: ${margin})`}
         </div>
       </div>
     </div>
@@ -180,21 +182,20 @@ export async function rollSkillCheck({
 
 /**
  * Effectue un jet d'initiative
- * Formule: 3d6×5 + Coordination + Instinct + Bonus
+ * Formule: 3d10 + Coordination ÷ 3 + Instinct ÷ 3 + Bonus
  */
 export async function rollInitiative(actor) {
-  const coordination = actor.system.caracteristiques.coordination.value + 
-                      (actor.system.caracteristiques.coordination.bonus || 0);
-  const instinct = actor.system.caracteristiques.instinct.value + 
-                   (actor.system.caracteristiques.instinct.bonus || 0);
-  const bonus = actor.system.initiative.bonus || 0;
+  const { coordination, instinct } = actor.system.caracteristiques;
+  const bonus = Number(actor.system.initiative.bonus) || 0;
+  const modCoordination = modificateurCarac(coordination);
+  const modInstinct = modificateurCarac(instinct);
 
-  // Formule du jet: 3d6×5
-  const roll = await new Roll("(3d6) * 5").evaluate();
+  // Formule du jet: 3d10
+  const roll = await new Roll(DES).evaluate();
   const rollTotal = roll.total;
 
   // Calculer le résultat total
-  const total = rollTotal + coordination + instinct + bonus;
+  const total = rollTotal + modCoordination + modInstinct + bonus;
 
   // Créer le message de chat
   const flavor = `
@@ -202,16 +203,16 @@ export async function rollInitiative(actor) {
       <h3>Initiative - ${actor.name}</h3>
       <div class="roll-details">
         <div class="roll-line">
-          <span class="roll-label">Jet (3d6×5):</span>
+          <span class="roll-label">Jet (${DES}):</span>
           <span class="roll-value">${rollTotal}</span>
         </div>
         <div class="roll-line">
-          <span class="roll-label">Coordination:</span>
-          <span class="roll-value">${coordination}</span>
+          <span class="roll-label">Coordination (${detailModificateur(coordination)}):</span>
+          <span class="roll-value">${modCoordination}</span>
         </div>
         <div class="roll-line">
-          <span class="roll-label">Instinct:</span>
-          <span class="roll-value">${instinct}</span>
+          <span class="roll-label">Instinct (${detailModificateur(instinct)}):</span>
+          <span class="roll-value">${modInstinct}</span>
         </div>
         <div class="roll-line">
           <span class="roll-label">Bonus:</span>
@@ -345,9 +346,19 @@ Hooks.on("combatStart", async (combat, updateData) => {
  * Override de la méthode rollInitiative pour les combats
  */
 CONFIG.Combat.initiative = {
-  formula: "3d6 * 5 + @caracteristiques.coordination.value + @caracteristiques.instinct.value + @initiative.bonus",
+  formula: `${DES} + @caracteristiques.coordination.modificateur + @caracteristiques.instinct.modificateur + @initiative.bonus`,
   decimals: 0
 };
+
+/* -------------------------------------------- */
+/*  Boutons des bonus de sorts dans le chat     */
+/* -------------------------------------------- */
+
+Hooks.once("setup", () => {
+  // Le hook a changé de nom en version 13
+  const hook = (game.release?.generation ?? 12) >= 13 ? "renderChatMessageHTML" : "renderChatMessage";
+  Hooks.on(hook, (message, html) => activerBoutons(message, html));
+});
 
 /* -------------------------------------------- */
 /*  Hook pour initialiser la race à vide        */

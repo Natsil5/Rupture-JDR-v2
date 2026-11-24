@@ -1,3 +1,5 @@
+import { DES, DIFFICULTE_DEFAUT, modificateurCarac, totalCarac } from "../regles.mjs";
+
 /**
  * Classe Actor étendue pour Rupture 2069
  */
@@ -10,7 +12,8 @@ export class Rupture2069Actor extends Actor {
 
   /** @override */
   prepareBaseData() {
-    // Les données de base sont préparées avant les items
+    // Obligatoire depuis Foundry 14 : sans cet appel, les effets actifs ne s'appliquent plus
+    super.prepareBaseData();
   }
 
   /** @override */
@@ -18,6 +21,12 @@ export class Rupture2069Actor extends Actor {
     const actorData = this;
     const systemData = actorData.system;
     const flags = actorData.flags.rupture2069 || {};
+
+    // Total et modificateur de chaque caractéristique, bonus des sorts compris
+    for (const carac of Object.values(systemData.caracteristiques ?? {})) {
+      carac.total = totalCarac(carac);
+      carac.modificateur = modificateurCarac(carac);
+    }
 
     // Effectuer les calculs spécifiques selon le type d'acteur
     this._prepareCharacterData(actorData);
@@ -46,8 +55,7 @@ export class Rupture2069Actor extends Actor {
    * Calcule la Santé selon le tableau de référence + multiplicateur
    */
   _calculateSante(systemData) {
-    const vigueur = systemData.caracteristiques.vigueur.value + 
-                    (systemData.caracteristiques.vigueur.bonus || 0);
+    const vigueur = totalCarac(systemData.caracteristiques.vigueur);
     const race = systemData.race || 'humain';
     const multiplicateur = systemData.sante.multiplicateur || 0;
 
@@ -105,8 +113,7 @@ export class Rupture2069Actor extends Actor {
    * Calcule le Nexus selon le Pouvoir + bonus des avantages et talents
    */
   _calculateNexus(systemData) {
-    const pouvoir = systemData.caracteristiques.pouvoir.value + 
-                    (systemData.caracteristiques.pouvoir.bonus || 0);
+    const pouvoir = totalCarac(systemData.caracteristiques.pouvoir);
 
     // Nexus de base selon le Pouvoir
     let nexusBase = 1; // Valeur par défaut
@@ -143,8 +150,7 @@ export class Rupture2069Actor extends Actor {
    * Calcule la Régénération selon la Vigueur
    */
   _calculateRegeneration(systemData) {
-    const vigueur = systemData.caracteristiques.vigueur.value +
-                    (systemData.caracteristiques.vigueur.bonus || 0);
+    const vigueur = totalCarac(systemData.caracteristiques.vigueur);
     const race = systemData.race || 'humain';
 
     let regeneration = 10; // Valeur par défaut
@@ -178,7 +184,7 @@ export class Rupture2069Actor extends Actor {
   /**
    * Effectue un jet de compétence
    */
-  async rollSkill(caracteristique, competenceNiveau = 0, difficulte = 80, label = "Test") {
+  async rollSkill(caracteristique, competenceNiveau = 0, difficulte = DIFFICULTE_DEFAUT, label = "Test") {
     const { rollSkillCheck } = game.rupture2069;
     
     return await rollSkillCheck({
@@ -202,14 +208,11 @@ export class Rupture2069Actor extends Actor {
    * Override pour l'initiative dans le combat tracker
    */
   async getInitiativeRoll(combatant, formula) {
-    const coordination = this.system.caracteristiques.coordination.value + 
-                        (this.system.caracteristiques.coordination.bonus || 0);
-    const instinct = this.system.caracteristiques.instinct.value + 
-                     (this.system.caracteristiques.instinct.bonus || 0);
-    const bonus = this.system.initiative?.bonus || 0;
+    const { coordination, instinct } = this.system.caracteristiques;
+    const bonus = Number(this.system.initiative?.bonus) || 0;
 
     // Créer la formule personnalisée
-    const rollFormula = `(3d6) * 5 + ${coordination} + ${instinct} + ${bonus}`;
+    const rollFormula = `${DES} + ${modificateurCarac(coordination)} + ${modificateurCarac(instinct)} + ${bonus}`;
     
     return new Roll(rollFormula, this.getRollData());
   }

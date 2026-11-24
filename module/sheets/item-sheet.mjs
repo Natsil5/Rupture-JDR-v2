@@ -1,3 +1,5 @@
+import { lignesBonus, optionsBonus } from "../bonus.mjs";
+
 /**
  * Feuille d'item pour Rupture 2069
  */
@@ -30,6 +32,12 @@ export class Rupture2069ItemSheet extends ItemSheet {
 
     // Ajouter les enrichissements
     context.enrichedDescription = TextEditor.enrichHTML(this.item.system.description, {async: false});
+
+    // Pour les sorts, proposer les bonus à donner
+    if (this.item.type === 'sort') {
+      context.bonusSort = lignesBonus(this.item);
+      context.optionsBonus = optionsBonus();
+    }
 
     // Pour les CADs, récupérer les objets sorts complets
     if (this.item.type === 'cad') {
@@ -70,6 +78,25 @@ export class Rupture2069ItemSheet extends ItemSheet {
     if (newScrollEl && scrollTop > 0) newScrollEl.scrollTop = scrollTop;
   }
 
+  /**
+   * Les lignes de bonus d'un sort sont une liste : on la reconstruit à partir du formulaire
+   * @override
+   */
+  _getSubmitData(updateData = {}) {
+    const data = super._getSubmitData(updateData);
+    const cles = Object.keys(data).filter(k => k.startsWith("system.bonus."));
+    if (this.item.type === "sort" && cles.length) {
+      const lignes = [];
+      for (const cle of cles) {
+        const [, , index, champ] = cle.split(".");
+        (lignes[Number(index)] ??= {})[champ] = data[cle];
+        delete data[cle];
+      }
+      data["system.bonus"] = lignes.filter(Boolean).map(l => ({ ...l, valeur: Number(l.valeur) || 0 }));
+    }
+    return data;
+  }
+
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
@@ -82,6 +109,19 @@ export class Rupture2069ItemSheet extends ItemSheet {
 
     // Gestionnaires d'événements spécifiques
     
+    // Ajouter ou supprimer un bonus donné par un sort
+    html.find('.bonus-ajouter').click(async (ev) => {
+      ev.preventDefault();
+      await this.item.update({
+        'system.bonus': [...lignesBonus(this.item), { type: 'carac', carac: 'vigueur', valeur: 0, palier: 'moyenne' }]
+      });
+    });
+    html.find('.bonus-supprimer').click(async (ev) => {
+      ev.preventDefault();
+      const index = Number($(ev.currentTarget).closest('.bonus-ligne').data('index'));
+      await this.item.update({ 'system.bonus': lignesBonus(this.item).filter((ligne, i) => i !== index) });
+    });
+
     // Permettre le drop de sorts sur les CADs
     if (this.item.type === 'cad') {
       html.on('drop', this._onDropSort.bind(this));
