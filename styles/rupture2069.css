@@ -800,6 +800,22 @@
   cursor: pointer;
 }
 
+/* Conversion des fiches d'avant le 3D10 */
+.rupture2069-conversion table {
+  max-height: 260px;
+}
+
+.rupture2069-conversion th,
+.rupture2069-conversion td {
+  text-align: left;
+  padding: 2px 6px;
+}
+
+.rupture2069-conversion label {
+  display: block;
+  margin: 3px 0;
+}
+
 /* Bonus donnés par un sort : message de chat */
 .rupture2069-bonus {
   margin-top: 5px;

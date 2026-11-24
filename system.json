@@ -2,7 +2,7 @@
   "id": "rupture2069",
   "title": "Rupture 2069",
   "description": "Système de jeu pour Rupture 2069 - Un jeu de rôle homebrew avec magie, technologie Echo et combat tactique",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "compatibility": {
     "minimum": "12",
     "verified": "12"

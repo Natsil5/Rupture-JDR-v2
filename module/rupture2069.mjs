@@ -10,13 +10,14 @@ import { Rupture2069ActorSheet } from "./sheets/actor-sheet.mjs";
 import { Rupture2069ItemSheet } from "./sheets/item-sheet.mjs";
 import { DES, DIFFICULTE_DEFAUT, detailModificateur, modificateurCarac } from "./regles.mjs";
 import { activerBoutons } from "./bonus.mjs";
+import { activerAnnulation, annuler, enregistrerConversion, ouvrirConversion, proposerConversion } from "./conversion.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
 /* -------------------------------------------- */
 
 Hooks.once('init', async function() {
-  console.log('Rupture 2069 | Initialisation du système v2.2.2');
+  console.log('Rupture 2069 | Initialisation du système v2.3.0');
 
   // Ajouter namespace global
   game.rupture2069 = {
@@ -25,7 +26,9 @@ Hooks.once('init', async function() {
     Rupture2069Combat,
     rollSkillCheck,
     rollInitiative,
-    createDefaultCompetences
+    createDefaultCompetences,
+    ouvrirConversion,
+    annulerConversion: annuler
   };
 
   // Définir les classes de documents personnalisées
@@ -49,6 +52,9 @@ Hooks.once('init', async function() {
 
   // Enregistrer les helpers Handlebars
   registerHandlebarsHelpers();
+
+  // Conversion des fiches d'avant le 3D10
+  enregistrerConversion();
 });
 
 /* -------------------------------------------- */
@@ -322,6 +328,9 @@ export async function createDefaultCompetences(actor) {
 
 Hooks.once("ready", async function() {
   console.log('Rupture 2069 | Système prêt');
+
+  // Proposer au MJ de convertir les fiches d'avant le 3D10
+  await proposerConversion();
 });
 
 /* -------------------------------------------- */
@@ -357,7 +366,10 @@ CONFIG.Combat.initiative = {
 Hooks.once("setup", () => {
   // Le hook a changé de nom en version 13
   const hook = (game.release?.generation ?? 12) >= 13 ? "renderChatMessageHTML" : "renderChatMessage";
-  Hooks.on(hook, (message, html) => activerBoutons(message, html));
+  Hooks.on(hook, (message, html) => {
+    activerBoutons(message, html);
+    activerAnnulation(message, html);
+  });
 });
 
 /* -------------------------------------------- */
