@@ -257,6 +257,8 @@
         </div>
       </div>
 
+      <p class="notes">Modificateur de la caractéristique + rang = total ajouté aux 3D10.</p>
+
       <div class="competences-columns">
         <div class="competences-col">
           {{!-- Colonne gauche --}}
@@ -281,10 +283,12 @@
                     {{#if (eq item.system.caracteristique "instinct")}}INS{{/if}}
                     {{#if (eq item.system.caracteristique "empathie")}}EMP{{/if}}
                     {{#if (eq item.system.caracteristique "pouvoir")}}POU{{/if}}
+                    <span class="item-modificateur" title="Modificateur de la caractéristique (son total ÷ 3, bonus compris)">{{item.modificateurTexte}}</span>
                   </div>
                   <div class="item-niveau">
-                    <input type="text" value="{{item.system.niveau}}" data-dtype="Number" placeholder="0" disabled/>
+                    <input type="text" value="{{item.system.niveau}}" data-dtype="Number" placeholder="0" title="Rang de la compétence" disabled/>
                   </div>
+                  <div class="item-total" title="Modificateur + rang : ajouté aux 3D10">{{item.total}}</div>
                   <div class="item-controls">
                     <a class="item-control item-roll" title="Lancer"><i class="fas fa-dice-d20"></i></a>
                     <a class="item-control item-edit" title="Éditer"><i class="fas fa-edit"></i></a>
@@ -319,10 +323,12 @@
                     {{#if (eq item.system.caracteristique "instinct")}}INS{{/if}}
                     {{#if (eq item.system.caracteristique "empathie")}}EMP{{/if}}
                     {{#if (eq item.system.caracteristique "pouvoir")}}POU{{/if}}
+                    <span class="item-modificateur" title="Modificateur de la caractéristique (son total ÷ 3, bonus compris)">{{item.modificateurTexte}}</span>
                   </div>
                   <div class="item-niveau">
-                    <input type="text" value="{{item.system.niveau}}" data-dtype="Number" placeholder="0" disabled/>
+                    <input type="text" value="{{item.system.niveau}}" data-dtype="Number" placeholder="0" title="Rang de la compétence" disabled/>
                   </div>
+                  <div class="item-total" title="Modificateur + rang : ajouté aux 3D10">{{item.total}}</div>
                   <div class="item-controls">
                     <a class="item-control item-roll" title="Lancer"><i class="fas fa-dice-d20"></i></a>
                     <a class="item-control item-edit" title="Éditer"><i class="fas fa-edit"></i></a>

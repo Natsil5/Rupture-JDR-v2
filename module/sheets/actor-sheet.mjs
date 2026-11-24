@@ -1,5 +1,6 @@
 import { DIFFICULTE_DEFAUT, estEcho, modificateurCarac, nomSimple, palierAtteint, signe, totalCarac } from "../regles.mjs";
 import { appliquerBonus, changementsEffet, libelleBonus, preparerBonus } from "../bonus.mjs";
+import { CAPACITES_ESPECE, MODIFICATEURS_ESPECE } from "../especes.mjs";
 
 /**
  * Feuille de personnage pour Rupture 2069
@@ -79,6 +80,10 @@ export class Rupture2069ActorSheet extends ActorSheet {
       // Ajouter à la catégorie appropriée
       switch (i.type) {
         case 'competence':
+          // Modificateur de la caractéristique associée (jamais la caractéristique brute) + rang
+          i.modificateur = modificateurCarac(context.system.caracteristiques?.[i.system.caracteristique]);
+          i.modificateurTexte = signe(i.modificateur);
+          i.total = i.modificateur + (Number(i.system.niveau) || 0);
           competences.push(i);
           break;
         case 'arme':
@@ -833,50 +838,10 @@ export class Rupture2069ActorSheet extends ActorSheet {
     console.log('🎭 Changement d\'espèce:', oldRace, '→', newRace);
 
     // Configuration des modificateurs raciaux
-    const raceModifiers = {
-      'fae': {
-        pouvoir: 10,
-        empathie: 10,
-        vigueur: -10
-      },
-      'humain': {},
-      'jorogumo': {
-        pouvoir: 10,
-        coordination: 10,
-        empathie: -10
-      },
-      'pantherine': {
-        pouvoir: 10,
-        coordination: 10,
-        empathie: -10
-      },
-      'warabouc': {
-        logique: 10,
-        pouvoir: 10,
-        coordination: -10
-      },
-      'wendigo': {
-        vigueur: 10,
-        pouvoir: 10,
-        coordination: -10
-      },
-      'worg': {
-        vigueur: 10,
-        pouvoir: 10,
-        empathie: -10
-      }
-    };
+    const raceModifiers = MODIFICATEURS_ESPECE;
 
     // Noms des capacités raciales
-    const raceAbilities = {
-      'fae': ['Beauté surnaturelle', 'Assaut onirique', 'Empathie faë', 'Télépathie'],
-      'humain': ['Sans magie', 'Inhérence partagée', 'Habile'],
-      'jorogumo': ['Beauté fascinante', 'Tisseuse', 'Perception des vibrations'],
-      'pantherine': ['Régénération accrue (Panthérine)', 'Griffes (Panthérine)', 'Vision nocturne (Panthérine)', 'Mystique (Panthérine)'],
-      'warabouc': ['Résistance (Warabouc)', 'Mystique (Warabouc)', 'Volonté d\'Acier'],
-      'wendigo': ['Régénération accrue (Wendigo)', 'Griffes (Wendigo)', 'Immunité au froid', 'Traque', 'Vision nocturne (Wendigo)', 'Vulnérabilité à la chaleur'],
-      'worg': ['Armure naturelle (Worg)', 'Sens aiguisés', 'Crocs', 'Quadrupède', 'Vision nocturne (Worg)']
-    };
+    const raceAbilities = CAPACITES_ESPECE;
 
     const updates = {};
 

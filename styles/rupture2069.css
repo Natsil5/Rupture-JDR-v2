@@ -535,7 +535,8 @@
 }
 
 .rupture2069 .items-list .item .item-caracteristique {
-  flex: 0 0 45px;
+  flex: 0 0 62px;
+  white-space: nowrap;
   text-align: center;
   font-weight: bold;
   color: #1abc9c;
@@ -543,8 +544,19 @@
 }
 
 .rupture2069 .items-list .item .item-niveau {
-  flex: 0 0 50px;
+  flex: 0 0 42px;
   text-align: center;
+}
+
+.rupture2069 .items-list .item .item-total {
+  flex: 0 0 34px;
+  text-align: center;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.rupture2069 .items-list .item .item-modificateur {
+  color: #2c3e50;
 }
 
 .rupture2069 .items-list .item .item-niveau input {
@@ -798,6 +810,40 @@
 .rupture2069 .bonus-ajouter,
 .rupture2069 .bonus-supprimer {
   cursor: pointer;
+}
+
+/* Générateur d'ennemis */
+.rupture2069-generateur label {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  align-items: center;
+  margin: 4px 0;
+}
+
+.rupture2069-ennemis table {
+  table-layout: auto;
+  font-size: 0.85em;
+}
+
+.rupture2069-ennemis td,
+.rupture2069-ennemis th {
+  padding: 1px 3px;
+  text-align: center;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.rupture2069-ennemis td:first-child,
+.rupture2069-ennemis th:first-child {
+  width: 100%;
+  text-align: left;
+  white-space: normal;
+}
+
+.rupture2069-ennemis td:first-child a {
+  white-space: normal;
+  word-break: normal;
 }
 
 /* Conversion des fiches d'avant le 3D10 */

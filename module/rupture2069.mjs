@@ -11,13 +11,15 @@ import { Rupture2069ItemSheet } from "./sheets/item-sheet.mjs";
 import { DES, DIFFICULTE_DEFAUT, detailModificateur, modificateurCarac } from "./regles.mjs";
 import { activerBoutons } from "./bonus.mjs";
 import { activerAnnulation, annuler, enregistrerConversion, ouvrirConversion, proposerConversion } from "./conversion.mjs";
+import { COMPETENCES_DE_BASE } from "./competences.mjs";
+import { ajouterBouton, creerEnnemis, ouvrirGenerateur } from "./generateur.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
 /* -------------------------------------------- */
 
 Hooks.once('init', async function() {
-  console.log('Rupture 2069 | Initialisation du système v2.3.0');
+  console.log('Rupture 2069 | Initialisation du système v2.4.0');
 
   // Ajouter namespace global
   game.rupture2069 = {
@@ -28,7 +30,9 @@ Hooks.once('init', async function() {
     rollInitiative,
     createDefaultCompetences,
     ouvrirConversion,
-    annulerConversion: annuler
+    annulerConversion: annuler,
+    ouvrirGenerateur,
+    creerEnnemis
   };
 
   // Définir les classes de documents personnalisées
@@ -154,7 +158,7 @@ export async function rollSkillCheck({
           <span class="roll-value">${rollTotal}</span>
         </div>
         <div class="roll-line">
-          <span class="roll-label">Caractéristique (${detailModificateur(carac)}):</span>
+          <span class="roll-label">Modificateur (${detailModificateur(carac)}):</span>
           <span class="roll-value">${modCarac}</span>
         </div>
         <div class="roll-line">
@@ -213,11 +217,11 @@ export async function rollInitiative(actor) {
           <span class="roll-value">${rollTotal}</span>
         </div>
         <div class="roll-line">
-          <span class="roll-label">Coordination (${detailModificateur(coordination)}):</span>
+          <span class="roll-label">Modif. Coordination (${detailModificateur(coordination)}):</span>
           <span class="roll-value">${modCoordination}</span>
         </div>
         <div class="roll-line">
-          <span class="roll-label">Instinct (${detailModificateur(instinct)}):</span>
+          <span class="roll-label">Modif. Instinct (${detailModificateur(instinct)}):</span>
           <span class="roll-value">${modInstinct}</span>
         </div>
         <div class="roll-line">
@@ -245,61 +249,7 @@ export async function rollInitiative(actor) {
  * Crée les compétences de base pour un nouveau personnage
  */
 export async function createDefaultCompetences(actor) {
-  const competences = [
-    // Compétences Martiales
-    { name: "Arme", champ: "martiale", caracteristique: "coordination", coutXP: 2, specialisation: "" },
-    { name: "Armes naturelles", champ: "martiale", caracteristique: "coordination", coutXP: 2 },
-    { name: "Esquive", champ: "martiale", caracteristique: "coordination", coutXP: 2 },
-    
-    // Compétences Mystiques
-    { name: "Canalisation", champ: "mystique", caracteristique: "pouvoir", coutXP: 3 },
-    { name: "Rituel (Noüs)", champ: "mystique", caracteristique: "pouvoir", coutXP: 3 },
-    { name: "Rituel (Psykhée)", champ: "mystique", caracteristique: "pouvoir", coutXP: 3 },
-    { name: "Rituel (Sôma)", champ: "mystique", caracteristique: "pouvoir", coutXP: 3 },
-    
-    // Compétences Echos
-    { name: "Echo (Noüs)", champ: "echo", caracteristique: "logique", coutXP: 3 },
-    { name: "Echo (Psykhée)", champ: "echo", caracteristique: "logique", coutXP: 3 },
-    { name: "Echo (Sôma)", champ: "echo", caracteristique: "logique", coutXP: 3 },
-    { name: "Engrammes (Noüs)", champ: "echo", caracteristique: "logique", coutXP: 3 },
-    { name: "Engrammes (Psykhée)", champ: "echo", caracteristique: "logique", coutXP: 3 },
-    { name: "Engrammes (Sôma)", champ: "echo", caracteristique: "logique", coutXP: 3 },
-    
-    // Compétences Physiques
-    { name: "Athlétisme", champ: "physique", caracteristique: "vigueur", coutXP: 1 },
-    { name: "Discrétions", champ: "physique", caracteristique: "coordination", coutXP: 2 },
-    { name: "Endurance", champ: "physique", caracteristique: "vigueur", coutXP: 1 },
-    { name: "Natation", champ: "physique", caracteristique: "vigueur", coutXP: 1 },
-    
-    // Compétences Sociales
-    { name: "Baratin", champ: "sociale", caracteristique: "empathie", coutXP: 2 },
-    { name: "Commandement", champ: "sociale", caracteristique: "pouvoir", coutXP: 2 },
-    { name: "Diplomatie", champ: "sociale", caracteristique: "empathie", coutXP: 2 },
-    { name: "Dressage", champ: "sociale", caracteristique: "empathie", coutXP: 2 },
-    { name: "Intimidation", champ: "sociale", caracteristique: "vigueur", coutXP: 2 },
-    { name: "Marchandage", champ: "sociale", caracteristique: "empathie", coutXP: 2 },
-    { name: "Représentation", champ: "sociale", caracteristique: "coordination", coutXP: 2 },
-    { name: "Séduction", champ: "sociale", caracteristique: "pouvoir", coutXP: 2 },
-    
-    // Compétences Techniques
-    { name: "Informatique", champ: "technique", caracteristique: "logique", coutXP: 3 },
-    { name: "Ingénierie", champ: "technique", caracteristique: "logique", coutXP: 3 },
-    { name: "Médecine", champ: "technique", caracteristique: "logique", coutXP: 3, specialisation: "" },
-    { name: "Métier", champ: "technique", caracteristique: "logique", coutXP: 2, specialisation: "" },
-    { name: "Savoir", champ: "technique", caracteristique: "logique", coutXP: 2, specialisation: "" },
-    { name: "Survie", champ: "technique", caracteristique: "logique", coutXP: 3 },
-    { name: "Traque", champ: "technique", caracteristique: "instinct", coutXP: 2 },
-    
-    // Compétences Utilitaire
-    { name: "Concentration", champ: "utilitaire", caracteristique: "pouvoir", coutXP: 2 },
-    { name: "Canotage", champ: "utilitaire", caracteristique: "vigueur", coutXP: 2 },
-    { name: "Conduite", champ: "utilitaire", caracteristique: "coordination", coutXP: 2 },
-    { name: "Equitation", champ: "utilitaire", caracteristique: "vigueur", coutXP: 2 },
-    { name: "Escamotage", champ: "utilitaire", caracteristique: "coordination", coutXP: 2 },
-    { name: "Navigation", champ: "utilitaire", caracteristique: "logique", coutXP: 2 },
-    { name: "Perception", champ: "utilitaire", caracteristique: "instinct", coutXP: 2 },
-    { name: "Pilotage", champ: "utilitaire", caracteristique: "coordination", coutXP: 2 }
-  ];
+  const competences = COMPETENCES_DE_BASE;
 
   const createdCompetences = [];
   for (let comp of competences) {
@@ -358,6 +308,12 @@ CONFIG.Combat.initiative = {
   formula: `${DES} + @caracteristiques.coordination.modificateur + @caracteristiques.instinct.modificateur + @initiative.bonus`,
   decimals: 0
 };
+
+/* -------------------------------------------- */
+/*  Générateur d'ennemis                        */
+/* -------------------------------------------- */
+
+Hooks.on("renderActorDirectory", (app, html) => ajouterBouton(html));
 
 /* -------------------------------------------- */
 /*  Boutons des bonus de sorts dans le chat     */
